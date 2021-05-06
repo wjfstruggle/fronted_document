@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        if (!undefined) {
+            console.log('undefied is false')
+        }
+        if (!null) {
+            console.log('null is false');
+        }
+        // null is false
+
+        console.log(undefined == null) // true
+        console.log(undefined === null) // false
+        console.log(Number(null)) // 0
+        console.log(5 + null) // 5
+        let i;
+        console.log(i); // undefined
+
+        function fun(x) {
+            return x
+        }
+        console.log(fun()) //undefined
+        function fun1(){}
+        console.log(fun1()) // undefined
+    </script>
+</body>
+
+</html>

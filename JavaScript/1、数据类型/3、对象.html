@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var obj = {
+      p: function fn(x) {
+        return x*2
+      }
+    }
+    console.log(obj.p(1)) // 2
+    // in 运算符
+    var obj1 = {
+      p: 1
+    }
+    console.log('p' in obj1) // true
+    console.log('toString' in obj1) // true
+    console.log(obj1.hasOwnProperty('toString')) // false
+    console.log(obj1.hasOwnProperty('p')) // true
+  </script>
+</body>
+</html>

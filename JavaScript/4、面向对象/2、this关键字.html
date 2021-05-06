@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var Person = {
+      name:'张三',
+      run:function() {
+        return this.name;
+      }
+    }
+    console.log(Person.run())// 张三
+    // this的指向可以变得
+    var Person1 = {
+      name:'张三',
+      run:function() {
+        return this.name;
+      }
+    }
+    var Person2 = {
+      name:'李四'
+    }
+    Person2.run = Person1.run
+    console.log(Person2.run())// 李四
+    // 相当于以下写法
+    function fn() {
+      return this.name;
+    }
+    var A = {
+      name:'张三',
+      run:fn
+    }
+    var B = {
+      name:'李四',
+      run:fn
+    }
+    // 顶层对象
+    var obj = {
+      name:'王五',
+      fun: function() {
+        return this.name
+      },
+    }
+    var name = '刘六';
+    var fn2 = obj.fun;
+    console.log(fn2()) // 刘六
+  </script>
+</body>
+</html>
