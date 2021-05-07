@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+   var fn1 = function () {
+      return this;
+    }
+    console.log(fn1() === window) // true
+    var obj = {}
+    fn1.call(obj) // Object
+    console.log(fn1.call(obj) === obj) // true
+
+    var n = 123
+    var obj2 = {
+      n: 456
+    }
+    function num() {
+      console.log(this.n)
+    }
+    num(); // 123
+    num.call(null)// 123
+    num.call(window)// 123
+    num.call(2)// undefined
+    num.call(true)// undefined
+    num.call(obj2)// 456
+    // call方法为原始值的时候
+    function fn2() {
+      console.log(this)
+    }
+    // 那么这个原始值会自动转成对应的包装对象
+    fn2.call(3) // Number [[PrimitiveValue]]: 3
+    fn2.call('abc') // String {"abc"}
+
+  </script>
+</body>
+</html>

@@ -49,6 +49,50 @@
     var name = '刘六';
     var fn2 = obj.fun;
     console.log(fn2()) // 刘六
+    // 使用场合
+    // 全局环境
+    function jump() {
+      console.log(this === window) // true
+    }
+    jump();
+    // 构造函数
+    var Test = function test(p) {
+      this.p = p
+    }
+    var o = new Test("hello")
+    console.log(o.p) // hello
+
+    // 对象的方法
+    var name2 = "name2"
+    var test = {
+      name2:'test',
+      jump1:function() {
+        console.log(this.name2) // test
+      }
+    }
+    test.jump1()
+    // (test.jump1())()
+    // 避免多层 this
+    // var objMore = {
+    //   p:function() {
+    //     console.log(this)
+    //     var p3 = function() {
+    //       console.log(this)
+    //     }();
+    //   }
+    // }
+    // objMore.p(); // Object , window
+    // 实际查分写法如下
+    var p3 = function () {
+      console.log(this)
+    }
+    var objMore = {
+      p:function() {
+        console.log(this)
+        var p4 = p3();
+      }
+    }
+    objMore.p();
   </script>
 </body>
 </html>
