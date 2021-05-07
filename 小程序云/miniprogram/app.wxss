@@ -1,0 +1,12 @@
+.add{
+  margin-top: 40rpx;
+}
+input {
+  border: 1px solid #ccc;
+  width: 80%;
+  height: 30rpx;
+  padding-left: 20rpx;
+}
+.active {
+  background-color: crimson;
+}

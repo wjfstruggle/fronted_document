@@ -1,0 +1,65 @@
+{
+  "setting": {},
+  "condition": {
+    "plugin": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "gamePlugin": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": [
+        {
+          "name": "数据库添加",
+          "pathName": "pages/bookAdd/bookAdd",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "数据库查询",
+          "pathName": "pages/book/book",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "数据库删除",
+          "pathName": "pages/bookRemove/bookRemove",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "数据库更新",
+          "pathName": "pages/bookUpdate/bookUpdate",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "云函数查询",
+          "pathName": "pages/bookCloud/bookCloud",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "云函数更新数据",
+          "pathName": "pages/bookCloudUpdate/bookCloudUpdate",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "云函数文件方法使用",
+          "pathName": "pages/fileMethods/fileMethods",
+          "scene": null
+        }
+      ]
+    }
+  }
+}

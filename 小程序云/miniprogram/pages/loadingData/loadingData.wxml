@@ -1,0 +1,5 @@
+<view class="add" wx:for="{{bookList}}" wx:key="item" data-id="{{item._id}}" bind:tap="getDetail">
+  <text >编号：{{item._id}}</text>
+  <text >书名：{{'《'+item.name+'》'}}</text>
+  <text >价格：{{item.price}}</text>
+</view>

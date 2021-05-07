@@ -1,0 +1,11 @@
+<view wx:for="{{bookList}}" wx:key="item" data-id="{{item._id}}" bind:tap="getDetail" class="{{item._id==_id?'active':''}}">
+  <text >书名：{{'《'+item.name+'》'}}</text>
+  <text >价格：{{item.price}}</text>
+</view>
+
+<view class="add">
+  书名：<input type="text" bindinput="getName"></input>
+  价格：<input type="text" bindinput="getPrice"></input>
+  <button type="primary" bind:tap="btnUpdate">更新数据</button>
+</view>
+

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "分页加载原理",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50
+}

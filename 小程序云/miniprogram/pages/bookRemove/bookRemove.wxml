@@ -1,0 +1,8 @@
+<view wx:for="{{bookList}}" wx:key="item" data-id="{{item._id}}" bind:tap="getDetail" class="{{item._id==_id?'active':''}}">
+  <text >书名：{{'《'+item.name+'》'}}</text>
+  <text >价格：{{item.price}}</text>
+</view>
+
+<view class="add">
+  <button type="primary" bind:tap="btnRemove">删除数据</button>
+</view>
