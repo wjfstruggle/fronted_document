@@ -37,6 +37,82 @@
     fn2.call(3) // Number [[PrimitiveValue]]: 3
     fn2.call('abc') // String {"abc"}
 
+    // call方法的一个应用是调用对象的原生方法。
+    var obj3 = {}
+    console.log(obj3.hasOwnProperty('toString')) //false
+    obj3.hasOwnProperty = function () {
+      return true;
+    }
+    console.log(obj3.hasOwnProperty('toString')) //true
+    console.log(Object.prototype.hasOwnProperty.call(obj3,'toString')) // false
+
+    // Function.prototype.apply()
+    var obj4 = {}
+    var fn4 = function () {
+      console.log(this)
+    }
+    fn4() // window
+    fn4.apply(obj4) // Object
+    var fn5 = function (a,b) {
+      console.log(a+b)
+    }
+    fn5.apply(this,[1,2]) // 3
+    fn5.call(this,1,2) // 3
+    // 找出最大元素
+    var arr = [1,2,3,5,78,45,89]
+    console.log(Math.max.apply(null,arr)) // 89
+
+    // Function.prototype.bind() `bind()`方法用于将函数体内的`this`绑定到某个对象，然后返回一个新函数。
+    var d = new Date();
+    console.log(d.getTime()); // 1620441832544
+    var print = d.getTime 
+    // print()// this is not a Date object.
+    var print1 = d.getTime.bind(d)
+    print1()
+    // bind方法的参数就是所要绑定this的对象，下面是一个更清晰的例子。
+    var count = {
+      count:1,
+      sum:function() {
+        this.count++
+        console.log(this.count++);
+      },
+    }
+    var count1 = {
+      count:10,
+    }
+    var fnCount = count.sum;
+    // fnCount(); // NaN
+    var fnCount1 = count.sum.bind(count);
+    var fnCount1 = count.sum.bind(count1);
+    fnCount1() // 2
+    fnCount1() // 11
+
+    // bind还可以绑定更多的参数
+    var obj5 = {
+      n: 10,
+      m: 20
+    }
+    var add = function(x , y) {
+      console.log( x*this.m + y*this.n)
+    }
+    var addFun = add.bind(obj5,3,4)
+    addFun() // 100
+
+    // 如果bind()方法的第一个参数是null或undefined，等于将this绑定到全局对象，函数运行时this指向顶层对象（浏览器为window）。
+
+    var x = 5
+    var y = 5
+    var add1 = function(x , y) {
+      console.log( this.x + this.y)
+    }
+    var obj6 = {
+      x:6,
+      y:6
+    }
+    var addFun1 = add1.bind(null,3,4) // 10
+    var addFun2 = add1.bind(obj6,3,4) // 12
+    addFun1()
+    addFun2()
   </script>
 </body>
 </html>
