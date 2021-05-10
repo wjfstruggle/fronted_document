@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 传递给函数的参数处理，不太一样，其他部分跟call一样。
+    // apply接受第二个参数为类数组对象, 这里用了JavaScript权威指南中判断是否为类数组对象的方法。
+    Function.prototype.myApply = function(context) {
+      if(context == null || context == undefined) {
+        context = window
+      }else {
+        context = Object(context)
+      }
+      // 判断是否为类对象
+      function isArray(obj) {
+        if(obj && typeof obj == "object" && obj.length >=0 && isFinite(obj.length)) {
+          return true;
+        }else {
+          false
+        }
+      }
+      let s = Symbol(); // 临时存储函数
+      context[s] = this;
+      let args = arguments[1] // 获取数组参数
+      let result
+      // 传参数，为数组
+      if(args) {
+        if(!Array.isArray(args)&&!isArray(args)) {
+          throw error("第二个参数必须为数组")
+        }else {
+          args = Array.from(args)
+          result = context[s](...args)
+        }
+      }else {
+        result = context[s]();
+      }
+      delete context[s]
+      return result
+    }
+
+    // 测试
+    var obj = {
+      count: 20
+    }
+    function sum() {
+      console.log(this.count + 20)
+    }
+    sum.myApply(obj) // 40
+    // 求最大数值
+   let maxNum =  Math.max.myApply(this,[12,3,4,5,5,45,67])
+   console.log(maxNum) // 67
+    var obj2 = {
+      n:2,
+      m:4
+    }
+   function sum2(x, y) {
+     console.log(this.n*x + this.m * y);
+   }
+   sum2.myApply(obj2, [1,3]) // 14
+  </script>
+</body>
+</html>

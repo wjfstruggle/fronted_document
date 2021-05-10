@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 根据call的规则设置上下文对象,也就是this的指向。
+    // 通过设置context的属性,将函数的this指向隐式绑定到context上
+    // 通过隐式绑定执行函数并传递参数。
+    // 删除临时属性，返回函数执行结果
+
+    Function.prototype.myCall = function(context,...arr) {
+      if(context==null || context == undefined) {
+        context = window
+      }else {
+        context = Object(context)
+      }
+      // context = Object(context)?Object(context):window
+      const symbol = Symbol() // 用于临时储存函数
+      context[symbol] = this; // 函数的this指向隐式绑定到context上
+      let result = context[symbol](...arr); // 通过隐式绑定执行函数并传递参数
+      delete context[symbol]; // 删除上下文对象的属性
+      return result; // 返回函数执行结果
+    }
+    var count = 1
+    var obj2 = {
+      count:2
+    }
+    var obj = {
+      count: 0,
+      sum:function() {
+        console.log(this.count + 1)
+      }
+    }
+    obj.sum.myCall(null) //2
+    obj.sum.myCall(obj) // 1
+    obj.sum.myCall(obj2) // 3
+    obj.sum.myCall(2) // NAN 
+    // ...arr
+    
+  </script>
+</body>
+</html>

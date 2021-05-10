@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // num 十进制数字
+    function get2bin(num) {
+      const stack = [];
+      while(num > 0) {
+        stack.push(num % 2);
+        num = Math.floor(num/ 2);
+      }
+      let arr = [];
+      while(stack.length > 0) {
+        
+        arr.push(stack.pop())
+      }
+      console.log(arr)
+      return arr
+    }
+    get2bin(35)
+  </script>
+</body>
+</html>

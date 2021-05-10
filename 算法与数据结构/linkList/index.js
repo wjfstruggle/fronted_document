@@ -31,3 +31,4 @@ e.next = d
 
 // 删除链表数据
 c.next = d;
+console.log(e)

@@ -469,3 +469,150 @@ obj.print()
 Array.prototype.slice.call([1, 2, 3], 0, 1) // [1]
 ```
 
+### 手写call
+
+```javascript
+思路
+// 根据call的规则设置上下文对象,也就是this的指向。
+// 通过设置context的属性,将函数的this指向隐式绑定到context上
+// 通过隐式绑定执行函数并传递参数。
+// 删除临时属性，返回函数执行结果
+
+    Function.prototype.myCall = function(context,...arr) {
+      if(context==null || context == undefined) {
+        context = window
+      }else {
+        context = Object(context)
+      }
+      const symbol = Symbol() // 用于临时储存函数
+      context[symbol] = this; // 函数的this指向隐式绑定到context上
+      let result = context[symbol](...arr); // 通过隐式绑定执行函数并传递参数
+      delete context[symbol]; // 删除上下文对象的属性
+      return result; // 返回函数执行结果
+    }
+	// 测试
+    var count = 1
+    var obj2 = {
+      count:2
+    }
+    var obj = {
+      count: 0,
+      sum:function() {
+        console.log(this.count + 1)
+      }
+    }
+    obj.sum.myCall(null) //2
+    obj.sum.myCall(obj) // 1
+    obj.sum.myCall(obj2) // 3
+    obj.sum.myCall(2) // NAN 
+```
+
+
+
+### 手写apply
+
+```javascript
+思路 
+// 传递给函数的参数处理，不太一样，其他部分跟call一样。
+// apply接受第二个参数为类数组对象, 这里用了JavaScript权威指南中判断是否为类数组对象的方法。
+    Function.prototype.myApply = function(context) {
+      if(context == null || context == undefined) {
+        context = window
+      }else {
+        context = Object(context)
+      }
+      // 判断是否为类对象
+      function isArray(obj) {
+        if(obj && typeof obj == "object" && obj.length >=0 && isFinite(obj.length)) {
+          return true;
+        }else {
+          false
+        }
+      }
+      let s = Symbol(); // 临时存储函数
+      context[s] = this;
+      let args = arguments[1] // 获取数组参数
+      let result
+      // 传参数，为数组
+      if(args) {
+        if(!Array.isArray(args)&&!isArray(args)) {
+          throw error("第二个参数必须为数组")
+        }else {
+          args = Array.from(args)// 转为数组
+          result = context[s](...args)// 执行函数并展开数组，传递函数参数
+        }
+      }else {
+        result = context[s]();// 执行函数 
+      }
+      delete context[s]// 删除上下文对象的属性
+      return result // 执行结果
+    }
+
+    // 测试
+    var obj = {
+      count: 20
+    }
+    function sum() {
+      console.log(this.count + 20)
+    }
+    sum.myApply(obj) // 40
+    // 求最大数值
+   let maxNum =  Math.max.myApply(this,[12,3,4,5,5,45,67])
+   console.log(maxNum) // 67
+    var obj2 = {
+      n:2,
+      m:4
+    }
+   function sum2(x, y) {
+     console.log(this.n*x + this.m * y);
+   }
+   sum2.myApply(obj2, [1,3]) // 14
+```
+
+
+
+### 手写bind
+
+拷贝源函数: 
+
+- 通过变量储存源函数
+- 使用`Object.create`复制源函数的prototype给fBind
+
+返回拷贝的函数
+
+调用拷贝的函数： 
+
+- new调用判断：通过`instanceof`判断函数是否通过`new`调用，来决定绑定的`context`
+- 绑定this+传递参数
+- 返回源函数的执行结果
+
+```javascript
+Function.prototype.myBind = function(obj, ...params) {
+      const thisFn = this;// 存储源函数以及上方的params(函数参数)
+      // 对返回的函数 secondParams 二次传参
+      let fBind = function (...secondParams) {
+        const isNew = this instanceof fBind // this是否是fBind的实例
+        const content = isNew ? this : Object(obj) // new调用就绑定到this上
+        return thisFn.call(content,...params, ...secondParams) // 用call调用源函数绑定this的指向并传递参数,返回执行结果
+      }
+      if(thisFn.prototype) {
+        // 复制源函数的prototype给fToBind 一些情况下函数没有prototype，比如箭头函数
+        fBind.prototype = Object.create(thisFn.prototype)
+      }
+      return fBind
+    }
+    // 测试
+    var count = 1
+    var obj2 = {
+      count:2
+    }
+    var obj = {
+      count: 0,
+      sum:function() {
+        console.log(this.count + 1)
+      }
+    }
+    let sum = obj.sum.myBind(obj2) //2
+    sum() // 2
+```
+

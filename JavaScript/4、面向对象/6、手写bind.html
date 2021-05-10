@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    Function.prototype.myBind = function(obj, ...params) {
+      const thisFn = this;// 存储源函数以及上方的params(函数参数)
+      // 对返回的函数 secondParams 二次传参
+      let fBind = function (...secondParams) {
+        const isNew = this instanceof fBind // this是否是fBind的实例
+        const content = isNew ? this : Object(obj) // new调用就绑定到this上
+        return thisFn.call(content,...params, ...secondParams) // 用call调用源函数绑定this的指向并传递参数,返回执行结果
+      }
+      if(thisFn.prototype) {
+        // 复制源函数的prototype给fToBind 一些情况下函数没有prototype，比如箭头函数
+        fBind.prototype = Object.create(thisFn.prototype)
+      }
+      return fBind
+    }
+    // 测试
+    var count = 1
+    var obj2 = {
+      count:2
+    }
+    var obj = {
+      count: 0,
+      sum:function() {
+        console.log(this.count + 1)
+      }
+    }
+    let sum = obj.sum.myBind(obj2) //2
+    sum() // 2
+    // obj.sum.bind(obj) // 1
+    // obj.sum.bind(obj2) // 3
+    // obj.sum.bind(2) // NAN 
+  </script>
+</body>
+</html>
