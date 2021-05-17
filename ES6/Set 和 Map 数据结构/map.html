@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const m = new Map();
+    m.set('name', '张三')
+    m.get('name')
+    console.log(m.get('name')) // 张三
+    console.log(m.has('name')) // true
+    console.log(m.has('age')) // false
+    console.log(m.delete('name')) // true
+    console.log(m.has('name')) // false
+  </script>
+</body>
+
+</html>

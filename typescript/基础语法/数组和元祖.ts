@@ -13,3 +13,11 @@ const objArr:User[] = [
   }
 ]
 // 元组
+const Info:[number,string,string] = [1,'2','3'];
+
+// csv
+const List:[number,string,string][] = [
+  [1,'2','3'],
+  [2,'3','4'],
+  [3,'4','5']
+]
