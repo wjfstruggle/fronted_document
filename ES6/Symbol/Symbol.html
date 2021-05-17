@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let s = Symbol();
+    console.log(typeof(s)) // symbol
+
+    const obj = {
+      toString() {
+        return 'abc';
+      }
+    }
+    let s1 = Symbol(obj)
+    console.log(s1) // Symbol(abc)
+
+    let s2 = Symbol('boo')
+    console.log(s2.description) // boo
+
+    let s3 = Symbol()
+    const obj2 = {}
+    obj2[s3] = 'hello'
+    obj2.name = 'tom'
+    console.log(obj2) 
+    // {
+    //   name: "tom",
+    //   Symbol(): "hello"
+    // }
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function User(name,age) {
+      this.name = name;
+      this.age = age;
+      this.sayName  = function() {
+        console.log("面向对象")
+      }
+    }
+
+    var user1 = new User('张三',19)
+    var user2 = new User('张三',19)
+    console.log(user1.name + '=' + user1.age) // 张三 = 19
+    console.log(user1.sayName == user2.sayName) // false
+
+    function Cat(name) {
+      this.name = name
+    }
+    Cat.prototype.price = 1200
+    var cat = new Cat('柯基')
+    var cat2 = new Cat('柴犬')
+    console.log(cat.name, "," + cat.price) // 柯基 ,1200
+    console.log(cat2.name, "," + cat2.price) // 柴犬 ,1200
+
+    Cat.prototype.getName = function() {
+      console.log(this.name)
+    }
+    var cat3 = new Cat('柴犬')
+    cat3.getName() // 柴犬
+
+    var P = function() {}
+    var p = new P();
+    console.log(p.constructor === P) // true
+    p.constructor === P.prototype.constructor // true
+
+    var pson = new p.constructor();
+    console.log(pson instanceof P); // true
+  </script>
+</body>
+</html>
