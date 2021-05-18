@@ -18,6 +18,41 @@
     console.log(m.has('age')) // false
     console.log(m.delete('name')) // true
     console.log(m.has('name')) // false
+
+    const map = new Map([
+      ['name', '张三'],
+      ['title', 'map数据结构']
+    ])
+    map.size // 2
+    map.has('name') // true
+    map.get('name') // "张三"
+    map.has('title') // true
+    map.get('title') // "map数据结构
+
+    // 遍历方法
+    const m2 = new Map()
+      .set('a', 1)
+      .set('b', 2)
+      .set('c', 3)
+    for (const item of m2.keys()) {
+      console.log(item) // a,b,c
+    }
+    for (const item of m2.values()) {
+      console.log(item) // 1,2,3
+    }
+    for (const item of m2.entries()) {
+      console.log(item) // ["a", 1]["b", 2] ["c", 3]
+    }
+    m2.forEach(el => {
+      console.log(el)
+    })
+
+    const map2 = new Map([
+      [1, 'one'],
+      [2, 'two'],
+      [3, 'three'],
+    ]);
+    console.log([...map2.keys()]) //[1, 2, 3]
   </script>
 </body>
 
