@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <input type="text" oninput="mobileInput(this.value)">
 </head>
 <body>
   <script>
@@ -13,6 +14,16 @@
     console.log(items)
     const arr = Array.from(items)
     console.log(arr) // [1,3,4,5,7]
+    function mobileInput(value) {
+      if(value.length==11) {
+        console.log(value)
+      }
+    }
+    function mobileInput(value) {
+      if(value.length==11) {
+        console.log(value)
+      }
+    }
   </script>
 </body>
 </html>

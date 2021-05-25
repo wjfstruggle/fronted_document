@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // Promise对象三种状态 pending (进行中)，flufilled(已成功)，rejected（已失败）
+    let p = new Promise(function(resolve,reject) {
+      resolve("success");
+      reject("err");
+    })
+    console.log(p);
+    // then方法 接收两个回调函数作为参数，一个是成功时的回调resolve,一个是失败时的回调reject
+    p.then(function(res){
+      console.log("成功回调",res)
+    },function(err){
+      console.log("失败回调",err)
+    })
+
+  </script>
+</body> 
+</html>
