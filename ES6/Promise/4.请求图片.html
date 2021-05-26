@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // function onloadImg(cb) {
+    //   let img = new Image();
+    //   img.src =
+    //     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2F1812.img.pp.sohu.com.cn%2Fimages%2Fblog%2F2009%2F11%2F18%2F18%2F8%2F125b6560a6ag214.jpg&refer=http%3A%2F%2F1812.img.pp.sohu.com.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624538815&t=bcd70661a6a70d4967e8ae57c38b868a'
+    //   img.onload = function () {
+    //     console.log("加载完成")
+    //     cb && cb();
+    //   }
+    //   img.onerror = function () {
+    //     console.log("加载失败")
+    //   }
+    // }
+    // onloadImg(function () {
+    //   console.log("加载完成后输出")
+    // });
+
+    function onloadImg1() {
+      return new Promise(function (resolve, reject) {
+        let img = new Image();
+        img.onload = function () {
+          resolve("加载完成");
+        }
+        img.onerror = function () {
+          reject("加载失败");
+        }
+        img.src =
+          'https://gimg2.baidu.com/image_search/src=http%3A%2F%2F1812.img.pp.sohu.com.cn%2Fimages%2Fblog%2F2009%2F11%2F18%2F18%2F8%2F125b6560a6ag214.jpg&refer=http%3A%2F%2F1812.img.pp.sohu.com.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624538815&t=bcd70661a6a70d4967e8ae57c38b868a'
+      })
+    }
+    onloadImg1().then(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    })
+  </script>
+</body>
+
+</html>

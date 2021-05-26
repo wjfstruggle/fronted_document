@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    class Promise {
+      // 构造器
+      constructor(executor) {
+        // 初始状态
+        this.state = 'pending'
+        // 成功的值
+        this.value = undefined;
+        // 失败原因
+        this.reason = undefined;
+        // 存放成功的数组
+        this.onResolvedArr = [];
+        // 存放失败的数组
+        this.onRejectedArr = [];
+        // 成功时回调
+        let resolve = (value) => {
+          if (this.state = 'pending') {
+            // resolve调用后，state转化为成功状态
+            this.state = 'flufilled'
+            // 存储value的值
+            this.value = value;
+            // 一旦reslove执行，调用成功的数组
+            this.onResolvedArr.forEach(fn => fn())
+          }
+        }
+        // 失败时回调
+        let rejtect = (reason) => {
+          if (this.state = 'pending') {
+            // resolve调用后，state转化为失败状态
+            this.state = 'rejected'
+            // 存储reason的原因
+            this.reason = reason;
+            // 一旦reject执行，调用失败的数组
+            this.onRejectedArr.forEach(fn => fn())
+          }
+        };
+        try {
+          // 立即执行
+          executor(resolve, reject);
+        } catch (err) {
+          rejtect(err)
+        }
+      }
+      then(onFlufilled, onRejected) {
+        let promise2 = new Promise((resolve, reject) => {
+          if (this.state == 'fulfilled') {
+            // 状态为fulfilled，执行onFulfilled，传入成功的值
+            onFlufilled(this.value);
+            // resolvePromise函数，处理自己return的promise和默认的promise2的关系
+            let x = onFlufilled(this.value);
+            resolvePromise(promise2, x, resolve, reject)
+          }
+          if (this.state == 'rejected') {
+            // 状态为fulfilled，执行onRejected，传入失败的值
+            onRejected(this.reason);
+            let x = onRejected(this.reason);
+            resolvePromise(promise2, x, resolve, reject)
+          }
+          // 当状态state为pending时
+          if (this.state == 'pending') {
+            this.onResolvedArr.push(() => {
+              onFlufilled(this.value);
+              let x = onFlufilled(this.value);
+              resolvePromise(promise2, x, resolve, reject)
+            })
+            this.onRejectedArr.push(() => {
+              onRejected(this.reason);
+              let x = onRejected(this.reason);
+              resolvePromise(promise2, x, resolve, reject)
+            })
+          }
+        })
+        return promise2;
+      }
+    }
+
+    function resolvePromise(promise2, x, resolve, reject) {
+      // 循环引用报错
+      if (x === promise2) {
+        // reject报错
+        return reject(new TypeError('Chaining cycle detected for promise'));
+      }
+      // 防止多次调用
+      let called;
+      // x不是null 且x是对象或者函数
+      if (x != null && (typeof x === 'object' || typeof x === 'function')) {
+        try {
+          // A+规定，声明then = x的then方法
+          let then = x.then;
+          // 如果then是函数，就默认是promise了
+          if (typeof then === 'function') {
+            // 就让then执行 第一个参数是this   后面是成功的回调 和 失败的回调
+            then.call(x, y => {
+              // 成功和失败只能调用一个
+              if (called) return;
+              called = true;
+              // resolve的结果依旧是promise 那就继续解析
+              resolvePromise(promise2, y, resolve, reject);
+            }, err => {
+              // 成功和失败只能调用一个
+              if (called) return;
+              called = true;
+              reject(err); // 失败了就失败了
+            })
+          } else {
+            resolve(x); // 直接成功即可
+          }
+        } catch (e) {
+          // 也属于失败
+          if (called) return;
+          called = true;
+          // 取then出错了那就不要在继续执行了
+          reject(e);
+        }
+      } else {
+        resolve(x);
+      }
+    }
+  </script>
+</body>
+
+</html>
