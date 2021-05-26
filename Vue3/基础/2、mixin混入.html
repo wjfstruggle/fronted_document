@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+  
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    // mixin 混入
+    // 组件的data，methods方法数据优先级高于mixin里面的data数据
+    // 生命周期函数，首先执行mixin，在执行组件里面的生命周期
+    // 子组件在调用mixin，Property "count" was accessed during render but is not defined on instance. at <Child> 
+    const myMixin = {
+      data() {
+        return {
+          count:2,
+          text:'混入'
+        }
+      },
+      created(){
+        console.log("mixin")
+      }
+    }
+    // 创建一个vue实例
+    const app = Vue.createApp({
+      data() {
+        return {
+          // count:1,
+        }
+      },
+      mixins:[myMixin],
+      template:
+      `
+        <child>{{count}}</child>
+        <div>{{text}}</div>
+      `,
+      mounted() {
+      },
+      created(){
+        console.log("组件的mixin")
+      },
+      methods:{
+        clickCount() {
+          this.count += 1
+        }
+      }
+    })
+    app.component('child',{
+      template:
+      `<div>{{count}}</div>`
+    })
+    app.mount("#app");
+  </script>
+</body>
+</html>

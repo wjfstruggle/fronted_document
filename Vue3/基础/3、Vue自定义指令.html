@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+  
+  </div>
+  <style>
+    div {
+      position: absolute;
+    }
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    // 创建一个vue实例
+    const app = Vue.createApp({
+      data() {
+        return {
+          // count:1,
+          distance:200
+        }
+      },
+      template:
+      `
+        <div ref="input" v-focus:left="distance">
+          <input  type="text" />
+        </div>
+      `,
+      mounted() {
+        // this.$refs.input.focus();
+      },
+      methods:{
+      }
+    })
+    /**
+     * created：在绑定元素的 attribute 或事件监听器被应用之前调用。在指令需要附加须要在普通的 v-on 事件监听器前调用的事件监听器时，这很有用。
+
+        beforeMount：当指令第一次绑定到元素并且在挂载父组件之前调用。
+
+        mounted：在绑定元素的父组件被挂载后调用。
+
+        beforeUpdate：在更新包含组件的 VNode 之前调用。
+     */ 
+    app.directive('focus',(el,binding)=>{
+      el.style[binding.arg] = binding.value + 'px'
+    })
+    app.mount("#app");
+  </script>
+</body>
+</html>
