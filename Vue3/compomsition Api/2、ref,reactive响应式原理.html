@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+
+  </div>
+  <style>
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    // 创建一个vue实例
+    // ref ,reactive响应式的引用
+    // 原理：通过proxy封装，当数据变化时，触发模板内容的更新
+    // ref处理基础类型的数据
+    // readonly只读，不可以修改
+    // toRefs proxy({value:'李四'}) => {name:proxy({value:'李四'})}
+    const app = Vue.createApp({
+      template: `
+        <div class="box">
+          {{name}}
+        </div>
+        <div class="box">
+          {{age}}
+        </div>
+      `,
+      setup(props, contxt) {
+        let {ref} = Vue;
+        let {reactive} = Vue;
+        let {toRefs} = Vue;
+        // proxy({value:'李四'})
+        let name = ref('张三');
+        let obj = reactive({name:'2333',age:18});
+        setTimeout(() => {
+          name.value = '李四'
+          obj.name = '234567'
+          obj.age = 20
+        }, 2000);
+        //toRefs 把解构赋值变成响应式数据
+        const {age} = toRefs(obj);
+        return {
+          name,
+          obj,
+          age
+        }
+      }
+    })
+    app.mount("#app");
+  </script>
+</body>
+
+</html>

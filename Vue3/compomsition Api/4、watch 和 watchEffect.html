@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+
+  </div>
+  <style>
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    // 创建一个vue实例
+    const app = Vue.createApp({
+      template: `
+        <div class="box" @click="handelClick">
+          {{msg}}
+        </div>
+      `,
+      setup(props, contxt) {
+        return {
+          msg: '张三',
+          handelClick: () => {
+            // 不能使用this关键字
+            console.log(111)
+          }
+        }
+      }
+    })
+    app.mount("#app");
+  </script>
+</body>
+
+</html>
