@@ -5,10 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve"
   },
-  "dependencies": {
-    
-  },
-  "devDependencies": {
-   
-  }
+  "devDependencies": {},
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
