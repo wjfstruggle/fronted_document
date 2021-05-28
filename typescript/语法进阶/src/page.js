@@ -1,6 +1,6 @@
 "use strict";
 var page = '张三';
-console.log(page);
+// console.log(page)
 var Header = /** @class */ (function () {
     function Header() {
         var elem = document.createElement('div');
