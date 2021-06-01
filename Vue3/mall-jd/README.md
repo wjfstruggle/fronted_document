@@ -1,4 +1,4 @@
-# mall
+# mall-jd
 
 ## Project setup
 ```
