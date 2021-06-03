@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
     <div class="footer">
-      <router-link class="footer__item" v-for="(item ,index) in navList" :key="index" :to="item.link" @click="changeTab(index)">
+      <router-link class="footer__item" v-for="(item ,index) in navList" :key="index" :to="item.link" @click="changeTab(item,index)">
         <img :src="index == indexActive?item.urlActive:item.url" alt="">
         <span :class="index == indexActive?'footer__item--active':''">{{item.tab}}</span>
       </router-link>
@@ -43,8 +43,11 @@ export default defineComponent({
     }
   },
   methods:{
-    changeTab(index){
+    changeTab(item,index){
       this.indexActive = index
+      this.$router.push({
+        path:item.link
+      })
     }
   },
   setup() {
@@ -64,7 +67,9 @@ export default defineComponent({
   box-sizing: border-box;
   display: flex;
   text-align: center;
-  padding: 0 .18rem;
+  padding: 0 .1rem .1rem 0;
+  background: #fff;
+  z-index: 10;
   .footer__item{
     flex: 1;
     color: rgb(133, 128, 128);

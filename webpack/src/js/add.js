@@ -1,1 +1,3 @@
-export default (x,y) => x + y;
+export const add = (x,y) => {
+  return x + y
+}
