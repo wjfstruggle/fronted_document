@@ -54,8 +54,7 @@ module.exports = {
   plugins:[
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title:'webpack学习',
-      template:'./public/index.html'
+      title:'webpack学习'
     })
   ]
 }

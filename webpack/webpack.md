@@ -378,15 +378,83 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
   ]
 ```
 
-#### 4.webpack实现模块化的原理
+#### 4.深⼊解析Babel和webpack中配置
+
+##### 4.1为什么需要babel？
+
+- 事实上，在开发中我们很少直接去接触babel，但是babel对于前端开发来说，目前是不可缺少的一部分： 
+  - 开发中，我们想要使用ES6+的语法，想要使用TypeScript，开发React项目，它们都是离不开Babel的； 
+  - 所以，学习Babel对于我们理解代码从编写到线上的转变过程直观重要； 
+  - 了解真相，你才能获得真知的自由！ 
+
+- 那么，Babel到底是什么呢？ pBabel是一个工具链，主要用于旧浏览器或者缓解中将ECMAScript 2015+代码转换为向后兼容版本的 JavaScript； 
+- 包括：语法转换、源代码转换、Polyfill实现目标缓解缺少的功能等
+
+##### 4-2插件的使用
+
+- babel本身可以作为一个独立的工具（和postcss一样），不和webpack等构建工具配置来单独使用
+- babel本身可以作为一个独立的工具（和postcss一样），不和webpack等构建工具配置来单独使用
+  - @babel/core：babel的核心代码，必须安装
+  - @babel/cli：可以让我们在命令行使用babel
+
+```shell
+npm install @babel/cli @babel/core
+```
+
+- 使用babel来处理我们的源代码
+  - src：是源文件的目录；
+  - --out-dir：指定要输出的文件夹dist
+
+```shell
+npx babel src --out-dir dist
+```
+
+- 比如我们需要转换箭头函数，var 命令，严格函数等等
+
+**我们可以使用预设（preset）**
+
+- 安装@babel/preset-env预设：
+
+```shell
+npm install @babel/preset-env -D
+```
+
+```shell
+执行以下命令： npx babel src --out-dir dist --presets=@babel/preset-env
+```
+
+```js
+src/index.js
+const info = "hello world"
+const add = (info) => {
+  console.log(info)
+}
+add();
 
 
+dist/index.js
+"use strict";
+var info = "hello world";
+var add = function add(info) {
+  console.log(info);
+};
+add();
+```
 
-#### 5.webpack中常⽤的Loaders（⼀）
+##### 4-3Babel的底层原理
 
-#### 6.webpack中常⽤的Loaders（⼆）
+- babel是如何做到将我们的一段代码（ES6、TypeScript、React）转成另外一段代码（ES5）的呢
+  - 从一种源代码（原生语言）转换成另一种源代码（目标语言），这是什么的工作呢
+  - 就是编译器，事实上我们可以将babel看成就是一个编译器
+  - Babel编译器的作用就是将我们的源代码，转换成浏览器可以直接识别的另外一段源代码；
+- Babel也拥有编译器的工作流程
+  - 解析阶段（Parsing）
+  - 转换阶段（Transformation）
+  - 生成阶段（Code Generation）
 
-#### 7.深⼊解析Babel和webpack中配置
+![img](https://img-blog.csdnimg.cn/20210609222429925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1dlYl9TdHJ1Z2dsZQ==,size_16,color_FFFFFF,t_70)
+
+![img](https://img-blog.csdnimg.cn/20210609222528914.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1dlYl9TdHJ1Z2dsZQ==,size_16,color_FFFFFF,t_70)
 
 #### 8.eslint-ts的使⽤和webpack中配置
 

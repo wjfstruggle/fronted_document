@@ -196,20 +196,6 @@ module.exports = function cssWithMappingToString(item) {
 
 /***/ }),
 
-/***/ "./src/img/zznh.png":
-/*!**************************!*\
-  !*** ./src/img/zznh.png ***!
-  \**************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "img/zznh.7fbcbf9f.png");
-
-/***/ }),
-
 /***/ "./src/css/common.less":
 /*!*****************************!*\
   !*** ./src/css/common.less ***!
@@ -589,32 +575,6 @@ const add = (x,y) => {
   return x + y
 }
 
-/***/ }),
-
-/***/ "./src/js/document.js":
-/*!****************************!*\
-  !*** ./src/js/document.js ***!
-  \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "documentHtml": () => (/* binding */ documentHtml)
-/* harmony export */ });
-/* harmony import */ var _img_zznh_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../img/zznh.png */ "./src/img/zznh.png");
-
-const documentHtml =() =>{
-  let div = document.createElement('div')
-  div.innerHTML = "hello world"
-  div.className = 'box'
-  document.body.appendChild(div);
-  // 图片加载
-  let img = new Image();
-  img.src = _img_zznh_png__WEBPACK_IMPORTED_MODULE_0__.default;
-  document.body.appendChild(img);
-  return div;
-}
-
 /***/ })
 
 /******/ 	});
@@ -668,18 +628,6 @@ const documentHtml =() =>{
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -696,26 +644,6 @@ const documentHtml =() =>{
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/publicPath */
-/******/ 	(() => {
-/******/ 		var scriptUrl;
-/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
-/******/ 		var document = __webpack_require__.g.document;
-/******/ 		if (!scriptUrl && document) {
-/******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src
-/******/ 			if (!scriptUrl) {
-/******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
-/******/ 			}
-/******/ 		}
-/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
-/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
-/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
-/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
-/******/ 		__webpack_require__.p = scriptUrl;
-/******/ 	})();
-/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
@@ -725,17 +653,14 @@ var __webpack_exports__ = {};
   \**********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_add_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/add.js */ "./src/js/add.js");
-/* harmony import */ var _js_document_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/document.js */ "./src/js/document.js");
-/* harmony import */ var _css_index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./css/index.css */ "./src/css/index.css");
-/* harmony import */ var _css_base_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./css/base.scss */ "./src/css/base.scss");
-/* harmony import */ var _css_common_less__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./css/common.less */ "./src/css/common.less");
-
+/* harmony import */ var _css_index_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./css/index.css */ "./src/css/index.css");
+/* harmony import */ var _css_base_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./css/base.scss */ "./src/css/base.scss");
+/* harmony import */ var _css_common_less__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./css/common.less */ "./src/css/common.less");
 
 
 
 
 console.log((0,_js_add_js__WEBPACK_IMPORTED_MODULE_0__.add)(1,2))
-;(0,_js_document_js__WEBPACK_IMPORTED_MODULE_1__.documentHtml)();
 })();
 
 /******/ })()
