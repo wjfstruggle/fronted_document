@@ -456,28 +456,426 @@ add();
 
 ![img](https://img-blog.csdnimg.cn/20210609222528914.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1dlYl9TdHJ1Z2dsZQ==,size_16,color_FFFFFF,t_70)
 
-#### 8.eslint-ts的使⽤和webpack中配置
+**babel-loader**
 
-#### 9.自定义webpack的Loader
+- 在实际开发中，我们通常会在构建工具中通过配置babel来对其进行使用的，比如在webpack中
+- 我们可以设置一个规则，在加载js文件时，使用我们的babel
 
-#### 10.webpack中常⽤的Plugins
+```js
+{
+    test:/\.js$/,
+    use:{
+        loader:'babel-loader',
+    }
+}
+```
 
-#### 11.⾃定义webpack的Plugin
+**babel-preset**
 
-#### 12.webpack性能优化之代码分包
+- 如果我们一个个去安装使用插件，那么需要手动来管理大量的babel插件，我们可以直接给webpack提供一个 preset，webpack会根据我们的预设来加载对应的插件列表，并且将其传递给babel
+- 比如常见的预设有三个
+  - env
+  - react
+  - TypeScript
 
-#### 13.webpack性能优化之打包效率
+```js
+// 安装preset-env
+npm install @babel/preset-env
+```
 
-#### 14.webpack性能优化之treeshaking
+##### 4.4Babel的配置文件
 
-#### 15.webpack打包原理解析(一)
+- 像之前一样，我们可以将babel的配置信息放到一个独立的文件中，babel给我们提供了两种配置文件的编写：
+  - babel.config.json（或者.js，.cjs，.mjs）文件；
+  - babel.config.json（或者.js，.cjs，.mjs）文件；
+- .babelrc.json：早期使用较多的配置方式，但是对于配置Monorepos项目是比较麻烦的；
+- babel.config.json（babel7）：可以直接作用于Monorepos项目的子包，更加推荐
 
-#### 16.webpack打包原理解析（⼆）
+```js
+{
+        test:/\.js$/,
+        use:{
+          loader:'babel-loader',
+          options:{
+            presets:[
+              ["@babel/preset-env"]
+            ]
+            // plugins:[
+            //   "@babel/plugin-transform-block-scoping",
+            //   "@babel/plugin-transform-arrow-functions"
+            // ]
+          }
+        }
+      }
+```
 
-#### 17.react、vue脚⼿架webpack分析
+**配置babel.config.js**
 
-#### 18.⾃动化构建⼯具gulp
+```js
+// babel.config.js
+module.exports = {
+  presets: [
+    ["@babel/preset-env"]
+  ]
+}
+// webpack.config.js
+把babel配置的预设封装到babel.config.js里面。
+// npm run build 即可把es6代码打包成es5的代码
+```
 
-#### 19.模块化打包构建⼯具rollup
+#### 5.DevServer和HMR
 
-#### 20.开发模式构建工具vite
+##### 5.1为什么要搭建本地服务器？
+
+- 目前我们开发的代码，为了运行需要有两个操作
+  - 操作一：npm run build，编译相关的代码；
+  - 操作二：通过live server或者直接通过浏览器，打开index.html代码，查看效果；
+- 这个过程经常操作会影响我们的开发效率，我们希望可以做到，当文件发生变化时，可以自动的完成 编译 和 展示
+- 为了完成自动编译，webpack提供了几种可选的方式：
+  - webpack watch mode：
+  - webpack-dev-server；
+  - webpack-dev-middlewar
+
+##### 5.2Webpack watch
+
+- webpack给我们提供了watch模式
+  - 在该模式下，`webpack`依赖图中的所有文件，只要有一个发生了更新，那么代码将被重新编译
+  - 我们不需要手动去运行 npm run build指令了
+- 如何开启watch呢？两种方式
+  - 方式一：在导出的配置中，添加 watch: true；
+  - 方式二：在启动`webpack`的命令中，添加 --watch的标识
+- 这里我们选择方式二，在`package.json的 scripts `中添加一个 watch 的脚本：
+
+```json
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch",
+  },
+```
+
+```shell
+执行  npm run watch // 修改代码，即可自动编译代码，刷新浏览器就可以了。
+```
+
+##### 5.3webpack-dev-server
+
+- 上面的方式可以监听到文件的变化，但是事实上它本身是没有自动刷新浏览器的功能的：
+  - 当然，目前我们可以在VSCode中使用live-server来完成这样的功能；
+  - 但是，我们希望在不适用`live-server`的情况下，可以具备`live reloading`（实时重新加载）的功能；
+- 安装webpack-dev-server
+
+```shell
+npm install --save-dev webpack-dev-server
+```
+
+- 添加一个新的scripts脚本
+
+```json
+"serve": "webpack serve"
+```
+
+```js
+启动浏览器：输入http://localhost:8080/  默认8080端口
+执行  npm run serve // 修改代码，即可自动编译代码，浏览器就可以自动刷新。
+```
+
+##### 5.4webpack-dev-middleware
+
+- 默认情况下，`webpack-dev-server`已经帮助我们做好了一切
+  - 比如通过`express`启动一个服务，比如HMR（热模块替换）
+  - 如果我们想要有更好的自由度，可以使用`webpack-dev-middleware`；
+- 什么是`webpack-dev-middleware`？
+  - `webpack-dev-middleware` 是一个封装器(wrapper)，它可以把 webpack 处理过的文件发送到一个 `server`；
+  - `webpack-dev-server` 在内部使用了它，然而它也可以作为一个单独的 `package` 来使用，以便根据需求进行 更多自定义设置； 
+
+**webpack-dev-middleware的使用**
+
+安装 `express` 和 `webpack-dev-middleware`：
+
+```bash
+npm install --save-dev express webpack-dev-middleware
+```
+
+接下来我们需要对 webpack 的配置文件做一些调整，以确保中间件(middleware)功能能够正确启用：
+
+**webpack.config.js**
+
+```js
+const { options } = require('less')
+const path = require('path')
+const { CleanWebpackPlugin }  = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+module.exports = {
+  mode:"development",
+  devtool:"source-map",
+  entry:'./src/index.js',
+  output:{
+    filename: 'main.js',
+    // 必须是一个绝对路径
+    path: path.resolve(__dirname, './dist'),
+    publicPath: '/'
+    // assetModuleFilename:"[name].[hash:8].[ext]",// `asset module type`方式
+  },
+  devServer:{
+    hot:true
+  },
+  module:{
+    rules:[
+      {
+        test:/\.js$/,
+        use:{
+          loader:'babel-loader'
+        }
+      }
+    ]
+  },
+  // 插件配置
+  plugins:[
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title:'webpack学习'
+    })
+  ]
+}
+```
+
+`publicPath` 也会在服务器脚本用到，以确保文件资源能够在 `http://localhost:8080 下正确访问，我们稍后再设置端口号。下一步就是设置我们自定义的 `express` 服务：
+
+**project**
+
+```diff
+  webpack-demo
+  |- package.json
+  |- webpack.config.js
++ |- server.js
+  |- /dist
+  |- /src
+    |- index.js
+  |- /node_modules
+```
+
+**server.js**
+
+```js
+const express = require('express');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+
+const app = express();
+const config = require('./webpack.config.js');
+const compiler = webpack(config);
+app.use(webpackDevMiddleware(compiler, {
+  publicPath: config.output.publicPath
+}));
+
+// Serve the files on port 8080.
+app.listen(8080, function () {
+  console.log('webpack 热更新');
+});
+```
+
+现在，添加一个 npm script，以使我们更方便地运行服务：
+
+**package.json**
+
+```json
+{
+  "name": "webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "serve": "webpack serve",
+    "start": "webpack-dev-server --open",
+    "server": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "css-loader": "^5.2.6",
+    "express": "^4.17.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "less": "^4.1.1",
+    "less-loader": "^9.0.0",
+    "node-sass": "^6.0.0",
+    "sass-loader": "^12.0.0",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-middleware": "^5.0.0",
+    "webpack-dev-server": "^3.11.2"
+  }
+}
+
+```
+
+现在，在你的终端执行 `npm run server`，将会有类似如下信息输出：
+
+```bash
+Example app listening on port 8080!
+<i> [webpack-dev-middleware] wait until bundle finished: /sockjs-node/info?t=1623594425941
+asset main.js 1.4 KiB [emitted] (name: main) 1 related asset
+asset index.html 234 bytes [emitted]
+./src/index.js 1.21 KiB [built] [code generated]
+webpack 5.38.1 compiled successfully in 1191 ms
+```
+
+现在，打开浏览器，跳转到 `http://localhost:8080`，你应该看到你的webpack 应用程序已经运行！
+
+##### 5.5认识模块热替换（HMR）
+
+**什么是HMR呢？** 
+
+- `HMR`的全称是`Hot Module Replacement`，翻译为模块热替换； 
+
+- 模块热替换是指在 应用程序运行过程中，替换、添加、删除模块，而无需重新刷新整个页面； 
+
+-  `HMR`通过如下几种方式，来提高开发的速度： 
+
+- 不重新加载整个页面，这样可以保留某些应用程序的状态不丢失； 
+
+- 只更新需要变化的内容，节省开发的时间； p修改了css、js源代码，会立即在浏览器更新，相当于直接在浏览器的devtools中直接修改样式； 
+
+-  如何使用HMR呢？ 
+
+  - 默认情况下，`webpack-dev-server`s已经支持HMR，我们只需要开启即可； 
+
+  - 在不开启HMR的情况下，当我们修改了源代码之后，整个页面会自动刷新，使用的是live reloading；
+
+- 开启HMR，修改webpack的配置；
+
+```js
+devServer:{
+    hot:true
+  },
+```
+
+**框架的HMR**
+
+- 有一个问题：在开发其他项目时，我们是否需要经常手动去写入 `module.hot.accpet`相关的API呢？ 
+  - 比如开发Vue、React项目，我们修改了组件，希望进行热更新，这个时候应该如何去操作呢？ 
+  - 事实上社区已经针对这些有很成熟的解决方案了： 
+  - 比如vue开发中，我们使用vue-loader，此loader支持vue组件的HMR，提供开箱即用的体验； 
+  - 比如react开发中，有React Hot Loader，实时调整react组件（目前React官方已经弃用了，改成使用react-refresh）； 
+
+**React的HMR**
+
+- 在之前，React是借助于`React Hot Loader`来实现的HMR，目前已经改成使用`react-refresh`来实现了
+- 安装实现HMR相关的依赖
+
+```shell
+npm install -D @pmmmwh/react-refresh-webpack-plugin react-refresh
+```
+
+- 修改`webpack.config.js`和`babel.config.js`文件：
+
+```js
+//webpack.config.js
+const ReactRefresgWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+// 插件配置
+  plugins:[
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title:'webpack学习'
+    }),
+    new ReactRefresgWebpackPlugin()
+  ]
+//babel.config.js
+module.exports = {
+  presets: [
+    ["@babel/preset-env"]
+  ],
+  plugins:[
+    ['react-refresh/babel']
+  ]
+}
+
+```
+
+**Vue的HMR**
+
+- Vue的加载我们需要使用vue-loader，而vue-loader加载的组件默认会帮助我们进行HMR的处理
+- 安装加载vue所需要的依赖
+
+```shell
+npm install vue-loader vue-template-compiler -D
+```
+
+- 修改`webpack.config.js`
+
+```js
+const { options } = require('less')
+const path = require('path')
+const { CleanWebpackPlugin }  = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const loader = require('sass-loader')
+module.exports = {
+  mode:"development",
+  devtool:"source-map",
+  entry:'./src/index.js',
+  output:{
+    filename: 'main.js',
+    // 必须是一个绝对路径
+    path: path.resolve(__dirname, './dist'),
+    publicPath: '/'
+    // assetModuleFilename:"[name].[hash:8].[ext]",// `asset module type`方式
+  },
+  devServer:{
+    hot:true
+  },
+  module:{
+    rules:[
+      {
+        test:/\.js$/,
+        use:{
+          loader:'babel-loader'
+        }
+      },
+      {
+        test:/\.vue$/,
+        use:{
+          loader: 'vue-loader'
+        }
+      }
+    ]
+  },
+  // 插件配置
+  plugins:[
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title:'webpack学习'
+    }),
+    new VueLoaderPlugin()
+  ]
+}
+```
+
+
+
+#### 6.环境分离和代码分离
+
+#### 7.DLL_Tree Shaking
+
+#### 8.Tree Shaking以及其他优化
+
+#### 9.打包分析和webpack源码
+
+#### 10.自定义Loader
+
+#### 11.自定义Plugin
+
+#### 12.⾃动化构建⼯具gulp
+
+#### 13.模块化打包构建⼯具rollup
+
+#### 14.开发模式构建工具vite
