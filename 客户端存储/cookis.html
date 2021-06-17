@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function setCookie(name, value, options = {}) {
+      let cookieData = `${name}=${value};`;
+      for (let key in options) {
+        let str = `${key}=${options[key]};`;
+        cookieData += str;
+      }
+      document.cookie = cookieData;
+    }
+    setCookie("key",'key',{
+      "Max-Age":3600*24
+    });
+    document.cookie = "test=test"
+  </script>
+</body>
+
+</html>
