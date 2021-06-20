@@ -4,7 +4,7 @@ class MinHeap {
     this.heap = [];
   }
   // 交换函数
-  swap(i1,i2){
+  swap(i1, i2) {
     let temp = this.heap[i1]
     this.heap[i1] = this.heap[i2]
     this.heap[i2] = temp;
@@ -22,13 +22,15 @@ class MinHeap {
     return i * 2 + 2;
   }
   // 上移操作:将这个值和它的父节点进行交换，直到父节点小于等于这个插入的值。
-  shiftUp(index){
+  shiftUp(index) {
     // index == 0 到栈顶了， 就返回
-    if(index == 0) {return;}
+    if (index == 0) {
+      return;
+    }
     const parentIndex = this.getParentIndex(index);
     // 和父节点交换
-    if(this.heap[parentIndex] > this.heap[index]) {
-      this.swap(parentIndex,index)
+    if (this.heap[parentIndex] > this.heap[index]) {
+      this.swap(parentIndex, index)
       this.shiftUp(parentIndex)
     }
   }
@@ -36,12 +38,12 @@ class MinHeap {
   shiftDown(index) {
     const leftIndex = this.getLeftIndex(index);
     const rightIndex = this.getRightIndex(index);
-    if(this.heap[leftIndex] < index) {
-      this.swap(leftIndex,index)
+    if (this.heap[leftIndex] < this.heap[index]) {
+      this.swap(leftIndex, index)
       this.shiftDown(leftIndex);
     }
-    if(this.heap[rightIndex] < index) {
-      this.swap(rightIndex,index)
+    if (this.heap[rightIndex] < this.heap[index]) {
+      this.swap(rightIndex, index)
       this.shiftDown(rightIndex);
     }
   }
@@ -53,6 +55,14 @@ class MinHeap {
   pop() {
     this.heap[0] = this.heap.pop(); // 用数组尾部元素替换堆顶
     this.shiftDown(0)
+  }
+  // 获取堆顶，返回数组的头部
+  peek() {
+    return this.heap[0]
+  }
+  // 获取堆得大小：返回数组的长度
+  size() {
+    return this.heap.length
   }
 }
 const h = new MinHeap();
