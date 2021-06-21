@@ -112,7 +112,23 @@
     var addFun1 = add1.bind(null,3,4) // 10
     var addFun2 = add1.bind(obj6,3,4) // 12
     addFun1()
-    addFun2()
+    addFun2();
+    function once(fn) {
+      let called = false;
+      return function() {
+        if(!called) {
+          called = true;
+          fn.apply(this. arguments)
+        }
+      }
+    }
+    function getOnceFun() {
+      console.log("我已经执行了")
+    }
+    const launchRocketOnce = once(getOnceFun)
+    launchRocketOnce();
+    launchRocketOnce();
+    launchRocketOnce();
   </script>
 </body>
 </html>
