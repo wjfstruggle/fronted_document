@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    不做优化：<input type="text" id="input">
+  </div>
+  <div>
+    做了防抖之后：<input type="text" id="input1">
+  </div>
+  <div>
+    做了节流之后：<input type="text" id="input2">
+  </div>
+  <script>
+    const ajax = (val) => {
+      console.log('请求成功' + val)
+    }
+    let getVal = document.getElementById("input");
+    let getVal1 = document.getElementById("input1");
+    let getVal2 = document.getElementById("input2");
+    let debounceAjax = debounce(ajax,500)
+    let throttleAjax = throttle(ajax,1000)
+    getVal.addEventListener("keyup",function() {
+      let that = this;
+      ajax(that.value)
+    })
+    getVal1.addEventListener("keyup",function() {
+      let that = this;
+      debounceAjax(that.value)
+    })
+    getVal2.addEventListener("keyup",function() {
+      let that = this;
+      throttleAjax(that.value)
+    })
+    // 防抖原理：在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时
+    function debounce (fn, delay) {
+      let timer = null;
+      return function() {
+        let that = this;
+        let args = arguments;
+        if(timer) {
+          clearTimeout(timer)
+          timer = null
+        }
+        timer = setTimeout(() => {
+          fn.apply(that,args)
+        },delay)
+      }
+    }
+    // 节流原理：规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效。
+    function throttle(fn, delay) {
+      let timer = null;
+      let lastTime = null;
+      return function(args) {
+        let _args = arguments;
+        let that = this;
+        let newTime = + new Date();
+        if(lastTime && newTime < lastTime + delay) {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            lastTime = newTime;
+            fn.apply(that, _args)
+          },delay)
+        }else {
+          lastTime = newTime;
+          fn.apply(that, _args)
+        }
+      }
+    }
+  </script>
+</body>
+</html>
