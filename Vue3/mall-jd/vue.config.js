@@ -41,7 +41,7 @@ module.exports = {
   devServer:{
     host: 'localhost',
     port: 8090, // 端口号
-    hotOnly: false, // 热更新
+    hotOnly: true, // 热更新
     https: false,// https:{type:Boolean}配置前缀
     open: false,//配置自动启动浏览器
     proxy: {
@@ -51,9 +51,9 @@ module.exports = {
         changeOrigin: true,
         secure: false, // 如果是https接口，需要配置这个参数
         ws: true, //如果要代理 websockets，配置这个参数
-        pathRewrite: {
-          '^/api': ''
-        }
+        // pathRewrite: {
+        //   '^/api': ''
+        // }
       }
     }
   }

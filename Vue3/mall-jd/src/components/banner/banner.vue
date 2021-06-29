@@ -1,8 +1,19 @@
 <template>
   <div class="banner">
-    <img class="banner__img" src="https://img1.mukewang.com/60b4554d000102b917920764.jpg" alt="">
+    <img class="banner__img" :src="bannerList[2].coverPhoto?bannerList[2].coverPhoto:''" alt="">
   </div>
 </template>
+<script>
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  props:['bannerList'],
+  setup() {
+    
+  },
+})
+</script>
+
 <style lang="scss" scoped>
   .banner{
     padding: .12rem 0;
