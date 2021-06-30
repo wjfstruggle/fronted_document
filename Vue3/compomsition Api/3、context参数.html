@@ -41,8 +41,8 @@
       setup(props, context) {
         const {h} = Vue;
         const {attrs,slots,emit} = context
-        // console.log(attrs) // Proxy {app: "app", __vInternal: 1}  获取子组件自定义的数据
-        // console.log(slots.default()) // Proxy {app: "app", __vInternal: 1}  获取子组件自定义的数据
+        console.log(attrs) // Proxy {app: "app", __vInternal: 1}  获取子组件自定义的数据
+        console.log(slots.default()) // Proxy {app: "app", __vInternal: 1}  获取子组件自定义的数据
         // return ()=> h('div',{},slots.default()) // 输出自定义组件插槽的内容
         function handelClick() {
           emit('change')

@@ -324,7 +324,7 @@ setup(props) {
   }
 ```
 
-###### `ref` 响应式变量
+###### ref 响应式变量
 
 在 Vue 3.0 中，我们可以通过一个新的 `ref` 函数使任何响应式变量在任何地方起作用，如下所示：
 
@@ -333,7 +333,7 @@ import { ref } from 'vue'
 const counter = ref(0)
 ```
 
-![1624957698322](C:\Users\伍剑锋\AppData\Roaming\Typora\typora-user-images\1624957698322.png)
+![1624957698322.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/764a90724aef4f9d815d2c5e3a0418de~tplv-k3u1fbpfcp-watermark.image)
 
 `ref` 接收参数并将其包裹在一个带有 `value` property 的对象中返回，然后可以使用该 property 访问或更改响应式变量的值：
 
@@ -453,7 +453,602 @@ export default {
 
 ###### computed计算属性
 
+与`Vue2`中的`computed`配置功能一致，返回的是一个`ref`类型的对象，计算属性的函数中如果只传入一个回调函数 表示的是`get`操作
 
+```js
+// html
+<div>{{user}}</div>
+// js
+import { defineComponent, reactive,  computed } from 'vue'
+// 计算属性computed
+setup() {
+    const objname = reactive({name:'我的对象'})
+    const user = computed(() => {
+        return objname.name + '是谁'
+    })
+    return {
+        user
+    }
+}
+```
+
+计算属性默认只有 getter，不过在需要时你也可以提供一个 setter：
+
+```js
+const user2 = computed({
+    get() {
+        return objname2.name+ '_'+ objname2.age
+    },
+    set(val) {
+        const age = val.split("_")
+        objname2.name = objname2.name + age[1]
+    }
+})
+```
+
+###### watch侦听器
+
+和vue2用法一致，默认情况下，它也是惰性的，即只有当被侦听的源发生变化时才执行回调。
+
+- 参数1:要监听的数据源
+- 参数2:回调函数
+- 参数3:配置
+
+**侦听单个数据源**
+
+侦听器数据源可以是返回值的 getter 函数，也可以直接是 `ref`：
+
+```js
+// 侦听一个 getter
+const state = reactive({
+    bannerList: [], // 轮播图
+    name:'点击2',
+    count: 0
+})
+const handelClick2 =() => {
+      state.count++
+    }
+watch(
+  () => state.count,
+  (count, prevCount) => {
+   console.log('我被监听了',count, prevCount); //logs: 1, 0
+  }
+)
+return {
+    ...toRefs(state),
+    handelClick2
+}
+// 直接侦听ref
+const count = ref(0)
+watch(count, (count, prevCount) => {
+  console.log('我被监听了',count, prevCount); //logs: 1, 0
+})
+```
+
+**侦听多个数据源**
+
+`watch`监听多个数据,使用数组
+
+```js
+const firstName = ref('');
+const lastName = ref('');
+
+watch([firstName, lastName], (newValues, prevValues) => {
+  console.log(newValues, prevValues);
+})
+
+firstName.value = "John"; // logs: ["John",""] ["", ""]
+lastName.value = "Smith"; // logs: ["John", "Smith"] ["John", ""]
+```
+
+**侦听响应式对象**
+
+使用侦听器来比较一个数组或对象的值，这些值是响应式的，要求它有一个由值构成的副本。
+
+```js
+const numbers = reactive([1, 2, 3, 4])
+
+watch(
+  () => [...numbers],
+  (numbers, prevNumbers) => {
+    console.log(numbers, prevNumbers);
+  })
+
+numbers.push(5) // logs: [1,2,3,4,5] [1,2,3,4]
+```
+
+###### watchEffect
+
+为了根据响应式状态*自动应用*和*重新应用*副作用，我们可以使用 `watchEffect` 方法。它立即执行传入的一个函数，同时响应式追踪其依赖，并在其依赖变更时重新运行该函数。
+
+对比：
+
+`watch`当值监听到变化的时候才执行，但可以通过配置`immediate`为`true`, 来指定初始时立即执行第一次。
+
+`watchEffect`可以立即执行第一次。
+
+```js
+const count = ref(0)
+watchEffect(() => {
+	console.log('我被监听了',count.value); // logs: 我被监听了 0
+})
+```
+
+**停止侦听**
+
+当 `watchEffect` 在组件的 [setup()](https://v3.cn.vuejs.org/guide/composition-api-setup.html) 函数或[生命周期钩子](https://v3.cn.vuejs.org/guide/composition-api-lifecycle-hooks.html)被调用时，侦听器会被链接到该组件的生命周期，并在组件卸载时自动停止。
+
+在一些情况下，也可以显式调用返回值以停止侦听：
+
+```js
+const stop = watchEffect(() => {
+  /* ... */
+})
+
+// later
+stop()
+```
+
+###### 生命周期钩子
+
+你可以通过在生命周期钩子前面加上 “on” 来访问组件的生命周期钩子。
+
+下表包含如何在 [setup ()](https://v3.cn.vuejs.org/guide/composition-api-setup.html) 内部调用生命周期钩子：
+
+| 选项式 API        | Hook inside `setup` |
+| ----------------- | ------------------- |
+| `beforeCreate`    | Not needed*         |
+| `created`         | Not needed*         |
+| `beforeMount`     | `onBeforeMount`     |
+| `mounted`         | `onMounted`         |
+| `beforeUpdate`    | `onBeforeUpdate`    |
+| `updated`         | `onUpdated`         |
+| `beforeUnmount`   | `onBeforeUnmount`   |
+| `unmounted`       | `onUnmounted`       |
+| `errorCaptured`   | `onErrorCaptured`   |
+| `renderTracked`   | `onRenderTracked`   |
+| `renderTriggered` | `onRenderTriggered` |
+| `activated`       | `onActivated`       |
+| `deactivated`     | `onDeactivated`     |
+
+TIP
+
+因为 `setup` 是围绕 `beforeCreate` 和 `created` 生命周期钩子运行的，所以不需要显式地定义它们。换句话说，在这些钩子中编写的任何代码都应该直接在 `setup` 函数中编写。
+
+**新的生命周期**
+
+```js
+setup(props,context) {
+    onBeforeMount(() => {
+        console.log('onBeforeMount')
+    })
+    onMounted(() => {
+        console.log('onMounted')
+    })
+    onBeforeUpdate(() => {
+        console.log('onBeforeUpdate');
+    })
+    // 视图更新时渲染
+    onUpdated(() => {
+        console.log('onUpdated');
+    })
+    onUnmounted(() => {
+        console.log('onUnmounted')
+    })
+    // 首次渲染执行
+    onRenderTracked(() => {
+        console.log('onRenderTracked')
+    })
+    // 页面重新渲染
+    onRenderTriggered(() => {
+        console.log('onRenderTriggered')
+    })
+    const name = ref('张三')
+    const handelClick = () => {
+        name.value = 'wujf'
+    }
+    return {
+        name,
+        handelClick
+    }
+```
+
+###### provide 与 inject
+
+我们也可以在组合式 API 中使用 [provide/inject](https://v3.cn.vuejs.org/guide/component-provide-inject.html)。两者都只能在当前活动实例的 [`setup()`](https://v3.cn.vuejs.org/guide/composition-api-setup.html) 期间调用。
+
+作用：实现跨层级组件间通信
+
+`provide` 函数允许你通过两个参数定义 property：
+
+1. name (`<String>` 类型)
+2. value
+
+```js
+provide(name,value)
+```
+
+```js
+// 父组件
+<template>
+  <div>
+    <My-Map></My-Map>
+  </div>
+</template>
+<script>
+import { defineComponent, reactive, toRefs, ref, computed, watch,watchEffect, provide } from 'vue'
+import MyMap from '@/components/my-map/my-map.vue'
+export default defineComponent({
+  components:{
+    MyMap
+  },
+  // provide 与 inject的用法
+  setup() {
+    const msg = ref('子组件传递信息')
+    const state = reactive({
+      obj:{
+        name: '网校账',
+        age: 19
+      }
+    })
+    provide('msg',msg)
+    provide('obj',state.obj)
+  }
+})
+</script>
+```
+
+`inject` 函数有两个参数：
+
+1. 要 inject 的 property 的 name
+2. 默认值 (**可选**)
+
+```js
+inject(name)
+```
+
+```js
+<template>
+<!-- 子组件 my-map.vue -->
+  <div>
+    {{msgF}}
+    <div>
+      名字：{{obj.name}} / 年龄：{{obj.age}}
+    </div>
+  </div>
+</template>
+<script>
+import { defineComponent, inject } from 'vue'
+export default defineComponent({
+  // inject的用法
+  setup() {
+    const msgF = inject('msg')
+    const obj = inject('obj')
+    return {
+      msgF,
+      obj
+    }
+  }
+})
+</script>
+```
+
+传给子孙组件
+
+```js
+// 父组件
+provide('my-map-son',state.obj)
+<template>
+<!-- 子孙组件 my-map-son.vue -->
+  <div>
+    <div>
+      名字：{{obj.name}} / 年龄：{{obj.age}}
+    </div>
+  </div>
+</template>
+<script>
+import { defineComponent, inject } from 'vue'
+export default defineComponent({
+  // provide 与 inject的用法
+  setup() {
+    const obj = inject('my-map-son')
+    return {
+      obj
+    }
+  }
+})
+</script>
+```
+
+###### setup参数的使用
+
+使用 `setup` 函数时，它将接收两个参数：
+
+1. `props`
+2. `context`
+
+**props**: 是一个对象,里面有父级组件向子级组件传递的数据,并且是在子级组件中使用`props`接收到的所有的属性
+
+```js
+<!-- 父组件 -->
+<template>
+  <div>
+    <My-Map :list="list"></My-Map>
+  </div>
+</template>
+<script>
+import { defineComponent } from 'vue'
+import MyMap from '@/components/my-map/my-map.vue'
+export default defineComponent({
+  components:{
+    MyMap
+  },
+  // provide 与 inject的用法
+  setup() {
+    const list = [1,2,3,4]
+    return {
+      list
+    }
+  }
+})
+</script>
+// 子组件
+<template>
+<!-- 子组件 my-map.vue -->
+  <div>
+  </div>
+</template>
+<script>
+import { defineComponent } from 'vue'
+export default defineComponent({
+  props:{
+    list:{
+      type: Array,
+      default: () => []
+    }
+  },
+  components:{
+    MyMapSon
+  },
+  setup(props) {
+    console.log(props.list) // [1, 2, 3, 4]
+  }
+})
+</script>
+```
+
+**注意的一点**：因为 `props` 是响应式的，你**不能使用 ES6 解构**，它会消除 prop 的响应性。
+
+如果需要解构 prop，可以在 `setup` 函数中使用 [`toRefs`](https://v3.cn.vuejs.org/guide/reactivity-fundamentals.html#响应式状态解构) 函数来完成此操作：
+
+```js
+import { toRefs } from 'vue'
+setup(props) {
+  const { title } = toRefs(props)
+  console.log(title.value)
+}
+```
+
+**Context**：传递给 `setup` 函数的第二个参数是 `context`。`context` 是一个普通的 `JavaScript` 对象，它暴露组件的三个 `property`：
+
+```js
+export default {
+  setup(props, context) {
+    // Attribute (非响应式对象),获取当前组件标签上所有没有通过props接收的属性的对象, 相当于 this.$attrs
+    console.log(context.attrs)
+
+    // 插槽 (非响应式对象),包含所有传入的插槽内容的对象, 相当于 this.$slots
+    console.log(context.slots)
+
+    // 触发事件 (方法),用来分发自定义事件的函数, 相当于 this.$emit
+    console.log(context.emit)
+  }
+}
+```
+
+`context` 是一个普通的 `JavaScript` 对象，也就是说，它不是响应式的，这意味着你可以安全地对 `context` 使用 ES6 解构。
+
+```js
+// MyBook.vue
+export default {
+  setup(props, { attrs, slots, emit }) {
+    ...
+  }
+}
+```
+
+`attrs`使用：获取子组件自定义的数据
+
+```js
+// 父组件
+<template>
+  <div>
+      <my-son msg="打得你叫爸爸"></my-son>
+  </div>
+</template>
+// 子组件
+<template>
+  <div>
+    子组件
+  </div>
+</template>
+<script>
+import { defineComponent } from 'vue'
+export default defineComponent({
+  setup(props,{attrs, slots, emit}) {
+    console.log(attrs.msg) // 打得你叫爸爸
+  },
+})
+</script>
+```
+
+`slots`使用
+
+```js
+// 父组件
+<template>
+  <div>
+      <my-son msg="打得你叫爸爸">
+          获取插槽的内容
+	  </my-son>
+  </div>
+</template>
+// 子组件
+<template>
+  <div>
+    子组件
+  </div>
+</template>
+<script>
+import { defineComponent,h } from 'vue'
+
+export default defineComponent({
+  setup(props,{attrs, slots, emit}) {
+    console.log(attrs.msg) // 打得你叫爸爸
+    console.log(slots.default()) // 
+    return ()=> h('div',{},slots.default()) // 输出自定义组件插槽的内容
+  },
+})
+</script>
+
+```
+
+输出自定义组件插槽内容：
+
+![1625043016074.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a851d3d590ef4167ac02442494bd21d3~tplv-k3u1fbpfcp-watermark.image)
+
+`emit`使用：向父组件派发事件
+
+```js
+// 父组件
+<my-son  @change="handelChange">
+</my-son>
+setup() {
+    const handelChange =() => {
+      console.log('23456')
+    }
+    return {
+      handelChange,
+    }
+  },
+// 子组件
+<template>
+  <div>
+    <button @click="handelClick"> 子组件</button>
+  </div>
+</template>
+<script>
+import { defineComponent,h } from 'vue'
+
+export default defineComponent({
+  setup(props,{attrs, slots, emit}) {
+    const handelClick =() => {
+      emit('change')
+    }
+    return {
+      handelClick
+    }
+  },
+})
+</script>
+
+```
+
+![1625043416118.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4e2245a2647b4e92a3b1978d216bf18f~tplv-k3u1fbpfcp-watermark.image)
+
+###### Teleport传送门
+
+可以选择挂载到指定的dom节点
+
+语法：
+
+```html
+// to 指定的节点位置 如：.box  , #warp 对的
+<teleport to="body">
+    // html
+</teleport>
+```
+
+举个栗子：把一个阴影层覆盖整个`body`
+
+```js
+<template>
+  <div>
+    <div class="box">
+      <button  @click='clickBtn'>点击</button>
+      // to 指定挂在的元素位置
+      <teleport to="body">
+        <div v-show="show" class="mask">
+        
+        </div>
+      </teleport>
+    </div>
+  </div>
+</template>
+<script>
+import { defineComponent, ref } from 'vue'
+
+export default defineComponent({
+  setup() {
+    const show = ref(false)
+    const clickBtn =() => {
+      show.value = !show.value
+    }
+    return {
+      clickBtn,
+      show
+    }
+  },
+})
+</script>
+
+<style>
+    .box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background-color: aqua;
+      z-index: 10;
+    }
+
+    .mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #000;
+      opacity: .5;
+    }
+  </style>
+```
+
+效果：
+
+初始位置：
+
+```html
+<div v-show="show" class="mask">
+
+</div>
+```
+
+![1625037369006.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cbbf432b12bc4589bd0075ece72e2d44~tplv-k3u1fbpfcp-watermark.image)
+
+使用`teleport`后，mask阴影层已挂在body下面了。
+
+```html
+<teleport to="body">
+<div v-show="show" class="mask">
+
+</div>
+</teleport>
+```
+
+![1625037369006.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f54ac670cf9a4375b108057c5b8cbfc3~tplv-k3u1fbpfcp-watermark.image)
 
 
 

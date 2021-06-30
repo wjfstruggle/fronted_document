@@ -2,18 +2,23 @@
   <div class="home">
     <!-- <position></position> -->
     <search></search>
-    <banner :bannerList="bannerList"></banner>
+    <!-- <banner :bannerList="bannerList"></banner> -->
     <serve-list></serve-list>
     <div class="grap"></div>
     <!-- <nearby></nearby> -->
     <button @click="handelClick">{{name}}</button>
+    <div @click="handelClick">{{objname.name}}</div>
+    <div @click="handelClick">{{user}}</div>
+    <div @click="handelClick">{{user2}}</div>
+    <button @click="handelClick2">增加{{count}}</button>
+    <button @click="handelClick3">监听</button>
   </div>
 </template>
 <script>
-import { defineComponent, reactive, toRefs, ref } from 'vue'
+import { defineComponent, reactive, toRefs, ref, computed, watch,watchEffect } from 'vue'
 import Search from '@/components/search/search.vue'
 import Position from '@/components/position/position.vue'
-import Banner from '@/components/banner/banner.vue'
+// import Banner from '@/components/banner/banner.vue'
 import ServeList from '@/components/serve-list/serve-list.vue'
 import Nearby from '@/components/nearby/nearby.vue'
 import { Toast } from 'vant'
@@ -22,13 +27,14 @@ export default defineComponent({
   components:{
     Search,
     Position,
-    Banner,
+    // Banner,
     ServeList,
     Nearby
   },
   data(){
     return {
-      name:'点击'
+      name:'点击',
+      source:'监听'
     }
   },
   beforeCreate(){
@@ -43,18 +49,32 @@ export default defineComponent({
   methods:{
     handelClick() {
       console.log('handelClick1')
+    },
+    handelClick3() {
+      this.source = "监听2" + Math.random()
     }
   },
   setup() {
     const state = reactive({
       bannerList: [], // 轮播图
-      name:'点击2'
+      name:'点击2',
+      count: 0
+    })
+    const objname = reactive({name:'我的对象'})
+    const objname2 = reactive({
+      name:'jenny',
+      age:16
     })
     const count = ref(0)
     const handelClick =() => {
       console.log(count.value++)
     }
-
+    const handelClick2 =() => {
+      state.count++
+    }
+    setTimeout(() => {
+      objname.name = '你的对象'
+    },3000)
     const getBanners = async () => {
       const {code,data} = await api.queryBannersByPosition({position:1})
       if(code == 1) {
@@ -62,9 +82,49 @@ export default defineComponent({
       }
     }
     getBanners();
+    // 计算属性computed
+    const user = computed(() => {
+      return objname.name + '是谁'
+    })
+    //  set 和 get
+    const user2 = computed({
+      get() {
+        return objname2.name+ '_'+ objname2.age
+      },
+      set(val) {
+        const age = val.split("_")
+        objname2.name = objname2.name + age[1]
+      }
+    })
+    const firstName = ref('');
+    const lastName = ref('');
+    watch(() => state.count,
+      (count, prevCount) => {
+        console.log('我被监听了',count, prevCount);
+      })
+      watch([firstName, lastName], (newValues, prevValues) => {
+        console.log(newValues, prevValues);
+      })
+      firstName.value = "John";
+      lastName.value = "Smith";
+
+    watchEffect(() => {
+      console.log('我被监听了',count.value); // 我被监听了 0
+    })
     return {
+      objname,
+      count,
       ...toRefs(state),
-      handelClick
+      handelClick,
+      user,
+      user2,
+      objname2,
+      handelClick2
+    }
+  },
+  watch: {
+    'source'(newVal, oldVal) {
+      console.log('我被监听了')
     }
   }
 })

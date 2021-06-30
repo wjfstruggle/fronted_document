@@ -1,8 +1,8 @@
 <template>
   <div class="serve-list">
     <div class="serve-list__item" v-for="item in 10" :key="item">
-      <img class="serve-list__img" src="http://www.dell-lee.com/imgs/vue3/超市.png" alt="">
-      <span class="serve-list__desc">超市便利</span>
+      <img class="serve-list__img" src="https://cloud-staging.jzjiv.com/424130694027593_27bxPq6o.jpg" alt="">
+      <span class="serve-list__desc">测试商圈</span>
     </div>
   </div>
 </template>
