@@ -1,3 +1,5 @@
+import View from './jrouter-view'
+import Link from './jrouter-link'
 let Vue;
 // vue插件形式：
 // 实现一个install方法，该方法会在use的时候被调用
@@ -5,21 +7,47 @@ class JVueRouter {
   constructor(options) {
     this.$options = options;
     // 需要将current属性声明为响应式的
-    Vue.util.defineReactive(
-      this,
-      "current",
-      window.location.hash.slice(1) || "/"
-    );
+    this.current = window.location.hash.slice(1) || '/'
+    // Vue.util.defineReactive(this, "current", "/");
+    Vue.util.defineReactive(this, "matched", []);
+    this.match();
 
     // set方法接收obj必须是响应式的
     // Vue.set(obj, key, val)
 
     // 2.监听hashchang事件，并且在变化的时候响应
-    window.addEventListener("hashchange", () => {
-      // hash: #/about
-      console.log(this.current);
-      this.current = window.location.hash.slice(1);
-    });
+    window.addEventListener("hashChange", this.onHashChange.bind(this));
+    window.addEventListener('load', this.onHashChange.bind(this))
+    // 创建一个路由映射表
+    // this.routeMap = {}
+    // options.routes.forEach(route => {
+    //   this.routeMap[route.path] = route
+    // })
+  }
+  onHashChange() {
+    console.log(window.location.hash);
+
+    this.current = window.location.hash.slice(1)
+    // 重新清空数组
+    this.matched = [];
+    this.match()
+  }
+  match(routes) {
+    routes = routes || this.$options.routes
+    // 遍历递归
+    for (const route of routes) {
+      if (route.path === '/' && this.current === '/') {
+        this.matched.push(route)
+      }
+      // /about/info
+      if (route.path === '/' && this.current.indexOf(route.path) != -1) {
+        this.matched.push(route)
+        if (route.children) {
+          this.match(route.children);
+        }
+        return
+      }
+    }
   }
 }
 // 形参1是Vue构造函数
@@ -39,43 +67,45 @@ JVueRouter.install = function (_Vue) {
     }
   })
   // 2.注册router-link和router-view全局组件
-  Vue.component('router-link', {
-    props: {
-      to: {
-        type: String,
-        required: true
-      }
-    },
-    render(h) {
-      // h是createElement, 返回vnode
-      // 获取插槽内容
-      // <a href=""></a>
-      // <router-link to="/about"></router-link>
-      // this.$slots.default 获取默认插槽的内容
-      return h('a', {
-        attrs: {
-          href: '#' + this.to
-        }
-      }, this.$slots.default);
-    },
-  })
-  Vue.component('router-view', {
-    render(h) {
-      // 数据响应式：数据变化可侦听，使用这些数据组件就会和响应式数据产生依赖关系
-      // 将来如果响应式数据发生变化，这些组件会重新渲染
-      // 0.获取router实例
-      // console.log(this.$router.$options, this.$router.current);
-      let component = null;
-      const route = this.$router.$options.routes.find(
-        (route) => route.path === this.$router.current
-      );
-      if (route) {
-        component = route.component;
-      }
-      // 1.获取hash部分，获取path
-      // 2.根据path，从路由表中获取组件
-      return h(component);
-    },
-  })
+  // Vue.component('router-link', {
+  //   props: {
+  //     to: {
+  //       type: String,
+  //       required: true
+  //     }
+  //   },
+  //   render(h) {
+  //     // h是createElement, 返回vnode
+  //     // 获取插槽内容
+  //     // <a href=""></a>
+  //     // <router-link to="/about"></router-link>
+  //     // this.$slots.default 获取默认插槽的内容
+  //     return h('a', {
+  //       attrs: {
+  //         href: '#' + this.to
+  //       }
+  //     }, this.$slots.default);
+  //   },
+  // })
+  // Vue.component('router-view', {
+  //   render(h) {
+  //     // 数据响应式：数据变化可侦听，使用这些数据组件就会和响应式数据产生依赖关系
+  //     // 将来如果响应式数据发生变化，这些组件会重新渲染
+  //     // 0.获取router实例
+  //     // console.log(this.$router.$options, this.$router.current);
+  //     let component = null;
+  //     const route = this.$router.$options.routes.find(
+  //       (route) => route.path === this.$router.current
+  //     );
+  //     if (route) {
+  //       component = route.component;
+  //     }
+  //     // 1.获取hash部分，获取path
+  //     // 2.根据path，从路由表中获取组件
+  //     return h(component);
+  //   },
+  // })
+  Vue.component('router-link', Link)
+  Vue.component('router-view', View)
 }
 export default JVueRouter;
