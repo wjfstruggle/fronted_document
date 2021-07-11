@@ -3,7 +3,7 @@ function defineReactive(obj, key, val) {
   observe(val);
 
   const dep = new Dep()
-  
+
   // 属性拦截
   Object.defineProperty(obj, key, {
     get() {
@@ -116,7 +116,7 @@ class Compile {
     const fn = this[dir + "Updater"];
     fn && fn(node, this.$vm[exp]);
     // 2.创建Watcher实例，负责后续更新
-    new Watcher(this.$vm, exp, function(val) {
+    new Watcher(this.$vm, exp, function (val) {
       fn && fn(node, val);
     });
   }
