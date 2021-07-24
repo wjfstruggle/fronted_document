@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <child></child>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    Vue.component('child', {
+      template: `<div>{{count2}}</div>`,
+      data: {
+        count2: 22
+        //         报错：[Vue warn]: The "data" option should be a function that returns a per-instance value in component definitions.
+        // warn @ vue.js:634
+        // vue.js:634 [Vue warn]: Property or method "count2" is not defined on the instance but referenced during render. Make sure that this property is reactive, either in the data option, or for class-based components, by initializing the property. See: https://vuejs.org/v2/guide/reactivity.html#Declaring-Reactive-Properties.
+      }
+    })
+    const app = new Vue({
+      el: "#app",
+      data: {
+        count: 1
+      }
+    })
+  </script>
+</body>
+
+</html>
