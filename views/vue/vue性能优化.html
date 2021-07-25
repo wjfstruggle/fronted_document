@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue性能优化</title>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <!-- <div><button @click="handelShow">切换</button></div>
+      <img v-show="show" src="https://cn.vuejs.org/images/lifecycle.png" alt="">
+      <img v-show="!show"
+        src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ce1121cb8ac84ddfa5dd63760d255664~tplv-k3u1fbpfcp-watermark.image"
+        alt=""> -->
+      <ul>
+        <!-- <li v-for="(item,index) in user" :key="index">{{item.name + '：'+ item.age+'：'+ '性别：'+ item.sex}}</li> -->
+        <li v-for="(item,index) in list" :key="index">{{item.name + '：'+ item.age+'：'+ '性别：'+ item.sex}}</li>
+      </ul>
+      <h1>
+        {{obj.name}}
+      </h1>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        foo: 'foo',
+        show: true,
+        obj: {},
+        userList: [],
+        list: [{
+            name: '张三',
+            'age': 19,
+            'sex': 0
+          },
+          {
+            name: '李四',
+            'age': 20,
+            'sex': 1
+          },
+          {
+            name: '王五',
+            'age': 21,
+            'sex': 1
+          },
+          {
+            name: '刘六',
+            'age': 22,
+            'sex': 0
+          },
+        ]
+      },
+      created() {
+        const userList = [{
+            name: '张三',
+            'age': 19,
+            'sex': 0
+          },
+          {
+            name: '李四',
+            'age': 20,
+            'sex': 1
+          },
+          {
+            name: '王五',
+            'age': 21,
+            'sex': 1
+          },
+          {
+            name: '刘六',
+            'age': 22,
+            'sex': 0
+          },
+        ]
+        this.userList = Object.freeze(userList)
+        setTimeout(() => {
+          this.userList[0].name = '极客'
+        }, 3000)
+      },
+      methods: {
+        handelShow() {
+          this.show = !this.show
+        }
+      },
+      computed: {
+        user() {
+          return this.list.filter(item => item.sex == 0)
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
