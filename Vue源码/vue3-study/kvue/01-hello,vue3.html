@@ -13,22 +13,71 @@
     {{title}}
   </div>
 
-  <script src="http://unpkg.com/vue@next"></script>
+  <!-- <script src="http://unpkg.com/vue@next"></script> -->
   <script>
     // 1.创建实例
     // vue2: new Vue()
     // vue3: createApp()
+    const Vue = {
+      createApp(options) {
+        return {
+          mount(selector){
+            const parent = document.querySelector(selector);
+            // 兼容setup
+            if(options.setup) {
+              this.setupState = options.setup()
+            }else {
+              this.data = options.data()
+            }
+            // proxy代理
+            this.proxy = new Proxy(this, {
+              get(target,key){
+                if(key in target.setupState) {
+                  return target.setupState[key]
+                }else {
+                  return target.data[key]
+                }
+              },
+              set(target,key,val){
+                if(key in target.setupState) {
+                 target.setupState[key] = val
+                }else {
+                  target.data[key] = val
+                }
+              },
+            })
+            if(!options.render) {
+              options.render = this.compile(parent.innerHTML)
+            }
+            // const el = options.render.call(options.data())
+            const el = options.render.call(this.proxy)
+            parent.innerHTML = ''
+            parent.appendChild(el)
+          },
+          compile(template) {
+            return function render() {
+              const h3 = document.createElement("h3")
+              h3.textContent = this.title;
+              return h3
+            }
+          }
+        }
+      }
+    }
     const { createApp } = Vue
     // 传入根组件配置
     const app = createApp({
       data() {
         return {
-          title: 'hello,vue3!'
+          title: 'hello,vue2!'
         }
       },
-    })
-    // 更简洁
-    app.mount('#app')
+      setup() {
+        return {
+          title: 'hello,vue3!'
+        }
+      }
+    }).mount('#app')
   </script>
 </body>
 

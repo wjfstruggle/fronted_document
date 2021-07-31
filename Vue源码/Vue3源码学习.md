@@ -1,123 +1,241 @@
-### 1.变量转字符串
+### `Vue3`源码解析01
 
-将值转换为字符串是一个非常常见的需求，在Javascript中，有两个函数将值转换为字符串：
+1. `vue3`初体验
+2. `vue3`设计理念
+3. ⼿写实现初始化流程
+4. 调试环境准备 
+5. 初始化流程分析
+6. ⾃定义渲染器实战
 
-- `String()`
-- `JSON.stringify()`
-
-这两个功能具有不同的机制，请看下面代码：
-
-```js
-console.log(String(null)); // null
-console.log(JSON.stringify(null)); // null
-
-console.log(String(undefined)); // "undefined" 这里是字符串
-console.log(JSON.stringify(undefined)); // undefined 这里是变量
-
-console.log(String("abc")); // abc
-console.log(JSON.stringify("abc")); // "\"abc\""
-
-console.log(String({ key: "value" })); // [object Object]
-console.log(JSON.stringify({ key: "value" })); // {"key":"value"}
-
-console.log(String([1, 2, 3])); // "1,2,3"
-console.log(JSON.stringify([1, 2, 3])); // "[1,2,3]"
-
-const obj = {
-    title: "devpoint",
-    toString() {
-        return "obj";
-    },
-};
-console.log(String(obj)); // "[object Object]"
-console.log(JSON.stringify(obj)); // {"title":"devpoint"}
-```
-
-从上面输出结果来看，两个方法将对象转为字符串机制存在差异，如何选择呢？
-
-- 实际开发中我们需要将`null`和`undefined`转换为字符串时，经常是希望它返回一个空字符串。
-- 当需要将一个数组和一个普通对象转换为字符串时，经常使用`JSON.stringify`。
-- 如果需要对象的`toString`方法被重写，则需要使用String()。
-- 在其他情况下，使用`String()`将变量转换为字符串。
-
-为了满足以上条件，Vue源码的实现如下：
+#### `vue3`初体验
 
 ```js
-function isPlainObject(obj) {
-    return Object.prototype.toString.call(obj) === "[object Object]";
-}
-function toString(val) {
-    if (val === null || val === undefined) return "";
-    if (Array.isArray(val)) return JSON.stringify(val);
-    if (isPlainObject(val) && val.toString === Object.prototype.toString)
-        return JSON.stringify(val);
-    return String(val);
-}
-
-const obj = {
-    title: "devpoint",
-    toString() {
-        return "obj";
-    },
-};
-console.log(toString(obj)); // obj
-console.log(toString([1, 2, 3])); // [1, 2, 3]
-console.log(toString(undefined)); // ""
-console.log(toString(null)); // ""
-```
-
-### 2.普通对象
-
-`Object.prototype.toString`允许将对象转换为字符串。对于普通对象，当调用此方法时，总是返回`[object object]`。
-
-```js
-const runToString = (obj) => Object.prototype.toString.call(obj);
-console.log(runToString({})); // [object Object]
-console.log(runToString({ title: "devpoint" })); // [object Object]
-console.log(runToString({ title: "devpoint", author: { name: "devpoint" } })); // [object Object]
-```
-
-类似上面这种对象我们称之为普通对象。
-
-在Javascript中还有一些特殊的对象，如`Array`、`String`和`RegExp`，它们在Javascript引擎中具有特殊的设计。当它们调用`Object.prototype.toString`方法时，会返回不同的结果。
-
-```js
-const runToString = (obj) => Object.prototype.toString.call(obj);
-console.log(runToString(["devpoint", 2021])); // [object Array]
-console.log(runToString(new String("devpoint"))); // [object String]
-console.log(runToString(/devpoint/)); // [object RegExp]
-复制代码
-```
-
-为了区分特殊设计对象和普通对象，可以用下面的函数来实现。
-
-```js
-function isPlainObject(obj) {
-    return Object.prototype.toString.call(obj) === "[object Object]";
-}
-```
-
-### 3.once
-
-很多时候，我们希望一个函数只执行一次。如果多次调用该函数，则只会执行第一次。
-
-```js
-function once(fn) {
-    let called = false;
-    return function () {
-        if (!called) {
-            called = true;
-            fn.apply(this, arguments);
+<div id="app">
+    {{title}}
+ </div>
+  <script src="http://unpkg.com/vue@next"></script>
+  <script>
+    // 1.创建实例
+    // vue2: new Vue()
+    // vue3: createApp()
+    const { createApp } = Vue
+    // 传入根组件配置
+    const app = createApp({
+      data() {
+        return {
+          title: 'hello,vue3!'
         }
-    };
-}
+      },
+    }).mount('#app')
+  </script>
+```
 
-function launchRocket() {
-    console.log("我已经执行了");
+composition写法：
+
+```js
+<div id="app">
+    {{title}}
+ </div>
+  <script src="http://unpkg.com/vue@next"></script>
+  <script>
+    const { createApp,ref } = Vue
+    const app = createApp({
+      setup() {
+        const title = ref('hello,vue3!')
+        return {
+          title
+        }
+      },
+    }).mount('#app')
+  </script>
+```
+
+#### `vue3`设计理念
+
+- 类型⽀持更好 
+- 利于`tree-shaking `
+- `API`简化、⼀致性：`render`函数，`sync`修饰符，指令定义等 
+- 复⽤性：`composition api `
+- 性能优化：响应式、编译优化 
+- 扩展性：⾃定义渲染器
+
+#### ⼿写`vue3`初始化
+
+整体思路
+
+![image-20210731225820801.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9509248548f94a60bfd6e962857c7410~tplv-k3u1fbpfcp-watermark.image)
+
+基本结构
+
+**`createApp`创建`Vue`实例，它拥有⼀个`mount`⽅法负责初始化**
+
+```js
+<script>
+  const Vue = {
+    createApp() {
+     return {
+        mount(selector){}
+     }
+    }
+  }
+</script>
+```
+
+挂载
+
+**将传⼊根组件配置转换为`dom`并追加到宿主元素上,选项中只有数据，往哪放数据并不知道，这⾥就需要编译出render选项**
+
+```js
+const Vue = {
+    createApp(options) {
+        return {
+            mount(selector){
+                const parent = document.querySelector(selector);
+                if(!options.render) {
+                    options.render = this.compile(parent.innerHTML)
+                }
+                const el = options.render.call(options.data())
+                parent.innerHTML = ''
+                parent.appendChild(el)
+            },
+            // 将options转换为dom并追加到宿主
+            // 获取模板，将数据绑上去
+            // 模板是有编译函数编译而来
+            compile(template) {
+                // template => ast => generate
+                return function render() {
+                    const h3 = document.createElement("h3")
+                    // 注意上下文
+                    h3.textContent = this.title;
+                    return h3
+                }
+            }
+        }
+    }
 }
-const launchRocketOnce = once(launchRocket);
-launchRocketOnce();
-launchRocketOnce();
-launchRocketOnce();
+```
+
+兼容`vue2.x`
+
+如果⽤户⽤的是`setup`写法哪？ 此时应该先执⾏`setup`，然后再处理其他选项，这样兼容了`vue 2.x的api`。
+
+```js
+ // 处理vue2 options选项
+if(options.setup) {
+    // 存入app实例上
+    this.setupState = options.setup()
+}else {
+    this.data = options.data()
+}
+// proxy代理,// 设置render上下文
+this.proxy = new Proxy(this, {
+    get(target,key){
+        // 优先从setupState上获取，其次是data
+        if(key in target.setupState) {
+            return target.setupState[key]
+        }else {
+            return target.data[key]
+        }
+    },
+    set(target,key,val){
+        if(key in target.setupState) {
+            target.setupState[key] = val
+        }else {
+            target.data[key] = val
+        }
+    },
+})
+if(!options.render) {
+    options.render = this.compile(parent.innerHTML)
+}
+// const el = options.render.call(options.data())
+const el = options.render.call(this.proxy)
+```
+
+扩展性
+
+如何做到不同平台的扩展性？可以抽象出⼀个渲染器概念，不同平台做相应操作。
+
+```js
+const Vue = {
+      // 创建渲染器
+      // opts中传入节点相关操作
+      createRenderer({querySelector, insert}) {
+        // createApp实际上由渲染器实现
+        return {
+          createApp(options) {
+            // 返回应用程序实例app
+            return {
+              // 传入宿主
+              mount(selector) {
+                // 传入的宿主获取
+                const parent = querySelector(selector)
+
+                // 处理vue2 options选项
+                if (options.setup) {
+                  // 存入app实例上
+                  this.setupState = options.setup()
+                }
+                if (options.data) {
+                  this.data = options.data()
+                }
+
+                // 设置render上下文
+                this.proxy = new Proxy(this, {
+                  get(target, key) {
+                    // 优先从setupState上获取，其次是data
+                    if (key in target.setupState) {
+                      return target.setupState[key]
+                    } else {
+                      return target.data[key]
+                    }
+                  },
+                  set(target, key, val) {
+                    if (key in target.setupState) {
+                      target.setupState[key] = val
+                    } else {
+                      target.data[key] = val
+                    }
+                  }
+                })
+
+                // 将options转换为dom并追加到宿主
+                // 获取模板，将数据绑上去
+                // 模板是有编译函数编译而来
+                if (!options.render) {
+                  options.render = this.compile(parent.innerHTML)
+                }
+                const el = options.render.call(this.proxy)
+                parent.innerHTML = ''
+                // parent.appendChild(el)
+                insert(el, parent)
+              },
+              compile(template) {
+                // template => ast => generate
+                return function render() {
+                  const h3 = document.createElement('h3')
+                  // 注意上下文
+                  h3.textContent = this.title
+                  return h3
+                }
+              }
+            }
+          }
+        }
+      },
+      // 传入根组件配置
+      createApp(options) {
+        // 1.根据当前web平台创建一个renderer
+        const renderer = Vue.createRenderer({
+          querySelector(sel) {
+            return document.querySelector(sel)
+          },
+          insert(child, parent, anchor) {
+            parent.insertBefore(child, anchor || null)
+          }
+        })
+        return renderer.createApp(options)
+      }
+    }
 ```
 

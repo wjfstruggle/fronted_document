@@ -18,42 +18,57 @@
     // 基本结构
     const Vue = {
       createApp(options) {
+        const render = Vue.createRenderer({
+          querySelector(selector) {
+            return document.querySelector(selector)
+          },
+          insert(child,parent,anchor) {
+            parent.insertBefore(child,anchor || null)
+          }
+        })
+        return render.createApp(options)
+      },
+      createRenderer({querySelector, insert}) {
         return {
-          mount(selector) {
-            const parent = document.querySelector(selector);
-            if (options.setup) {
-              this.setupState = options.setup()
-            }else {
-              this.data = options.data();
-            }
-            this.proxy = new Proxy(this,{
-              get(target,key) {
-                if(key in target.setupState) {
-                  return target.setupState[key]
+          createApp(options) {
+            return {
+              mount(selector) {
+                const parent = querySelector(selector);
+                if (options.setup) {
+                  this.setupState = options.setup()
                 }else {
-                  return target.data[key]
+                  this.data = options.data();
                 }
+                this.proxy = new Proxy(this,{
+                  get(target,key) {
+                    if(key in target.setupState) {
+                      return target.setupState[key]
+                    }else {
+                      return target.data[key]
+                    }
+                  },
+                  set(target,key,val) {
+                    if(key in target.setupState) {
+                      target.setupState[key] = val
+                    }else {
+                      target.data[key] = val
+                    }
+                  }
+                })
+                if(!options.render) {
+                  options.render = this.compile(parent.innerHTML)
+                }
+                const el = options.render.call(this.proxy)
+                parent.innerHTML = ''
+                insert(el,parent)
               },
-              set(target,key,val) {
-                if(key in target.setupState) {
-                  target.setupState[key] = val
-                }else {
-                  target.data[key] = val
+              compile(template){
+                return function render() {
+                  const h3 = document.createElement("h3")
+                  h3.textContent = this.title;
+                  return h3
                 }
               }
-            })
-            if(!options.render) {
-              options.render = this.compile(parent.innerHTML)
-            }
-            const el = options.render.call(this.proxy)
-            parent.innerHTML = ''
-            parent.appendChild(el)
-          },
-          compile(template){
-            return function render() {
-              const h3 = document.createElement("h3")
-              h3.textContent = this.title;
-              return h3
             }
           }
         }
