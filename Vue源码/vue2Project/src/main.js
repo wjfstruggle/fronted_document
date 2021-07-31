@@ -2,8 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import './plugins/element.js'
 
-// import router from './router'
-import router from './jrouter'
+import router from './router'
+// import router from './jrouter'
 
 // import store from './store'
 import store from './jstore'
