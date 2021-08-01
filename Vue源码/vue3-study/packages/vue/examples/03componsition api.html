@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <button @click="add">点击 {{count}}</button>
+    {{count}}
+    <ul>
+      <li v-for="(item,index) in lists" :key="index">
+        <div>{{item.title}}</div>
+        <div>{{item.content}}</div>
+      </li>
+    </ul>
+  </div>
+  <script src="../dist/vue.global.js"></script>
+  <script>
+    const {createApp, ref, onMounted,onUnmounted,toRefs,reactive,computed} = Vue
+    function useTab() {
+      const state = reactive({
+        list:[
+          {index:0,title:'首页','content':'新闻首页'},
+          {index:1,title:'新闻','content':'新闻多督导'},
+          {index:2,title:'热门','content':'热门赛事'},
+        ],
+        obj:{},
+        count:1
+      })
+      // 点击事件
+      const add = ()=> {
+        state.count++
+      }
+      // 计算属性
+      const lists = computed(() => {
+        return state.list.filter(item => item.index == 1 || item.index == 2)
+      })
+      return {
+        add,
+        lists,
+        state
+      }
+    }
+    const app = createApp({
+      setup() {
+        const {add,lists,state} = useTab()
+        onMounted(() => {
+          setInterval(() => {
+            state.count ++
+          }, 1000);
+        })
+        onUnmounted(() => {
+          clearInterval()
+        })
+        return {
+          add,
+          lists,
+          ...toRefs(state)
+        }
+      }
+    }).mount("#app")
+  </script>
+</body>
+</html>
