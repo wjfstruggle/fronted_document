@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>a 标点击后 hover 事件失效</title>
+</head>
+<style lang="css">
+  a:hover{
+    color: blue;
+  }
+  a:active{
+    color: blue;
+  }
+  div {
+    overflow: hidden;
+  }
+  .bb{
+    overflow: hidden;
+  }
+</style>
+<body>
+  <div class="box">
+    <a href="https://www.baidu.com">百度</a>
+  </div>
+  <div style="width:100px; height:100px; margin-bottom:100px;background:red;"></div>
+  <div class="bb">
+    <div style="width:100px; height:100px; margin-top:200px;background:blue;"></div>
+  </div>
+</body>
+</html>
