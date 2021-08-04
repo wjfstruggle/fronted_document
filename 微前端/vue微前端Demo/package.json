@@ -1,0 +1,10 @@
+{
+    "name": "qiankun",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "install-all": "node bin/install.js npm",
+        "serve-all": "node bin/start.js",
+        "build-all": "node bin/build.js"
+    }
+}
