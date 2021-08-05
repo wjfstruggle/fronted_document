@@ -1,0 +1,27 @@
+{
+  "name": "micro-front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "container:install": "npm-run-all --serial install:*",
+    "container:start": "npm-run-all --parallel start:*",
+    "install:main": "cd main && yarn",
+    "start:main": "cd main && yarn serve",
+    "install:vue": "cd vue-template && yarn",
+    "start:vue": "cd vue-template && yarn serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a1029563229/micro-front-template.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a1029563229/micro-front-template/issues"
+  },
+  "homepage": "https://github.com/a1029563229/micro-front-template#readme",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
