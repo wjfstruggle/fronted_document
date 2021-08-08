@@ -1,13 +1,13 @@
 <template>
-  <section class="cns-main-menu">
-    <a-menu mode="inline" theme="dark" :selectedKeys="[selectKey]">
-      <a-menu-item v-for="item in menus" :key="item.key" @click="changeMenu(item)">
+  <section class="cns-main-menu"  v-if="vueToken">
+    <el-menu mode="inline" theme="dark" :selectedKeys="[selectKey]">
+      <el-menu-item v-for="item in menus" :key="item.key" @click="changeMenu(item)">
         <router-link :to="{path: item.path }">
-          <a-icon v-if="item.icon" :type="item.icon" />
+          <el-icon v-if="item.icon" :type="item.icon" />
           <span>{{item.title}}</span>
         </router-link>
-      </a-menu-item>
-    </a-menu>
+      </el-menu-item>
+    </el-menu>
   </section>
 </template>
 
@@ -28,6 +28,7 @@ export default {
   watch:{
   },
   created() {
+    this.vueToken = localStorage.getItem("vueToken")
   },
   methods: {
     changeMenu(item) {
@@ -38,11 +39,10 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .cns-main-menu {
   width: 100%;
   height: 100%;
-  background: #001529;
   .cns-menu {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

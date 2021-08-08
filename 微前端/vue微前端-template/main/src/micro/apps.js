@@ -3,6 +3,7 @@ import config from "@/config";
 console.log(config);
 const {
   VUE_MICRO_APP,
+  VUE_APP_CONTENT
 } = config;
 
 const apps = [
@@ -16,7 +17,13 @@ const apps = [
     name: "VueMicroApp",
     entry: VUE_MICRO_APP,
     container: "#frame",
-    activeRule: "/vue",
+    activeRule: "/home",
+  },
+  {
+    name: "VueContent",
+    entry: VUE_APP_CONTENT,
+    container: "#frame",
+    activeRule: "/content-home",
   },
 ];
 

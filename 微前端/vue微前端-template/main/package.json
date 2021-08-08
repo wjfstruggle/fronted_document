@@ -1,5 +1,5 @@
 {
-  "name": "vue",
+  "name": "vuecontent",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,8 +13,8 @@
     "core-js": "^3.6.4",
     "element-ui": "^2.15.5",
     "import-html-entry": "^1.5.1",
-    "less": "^3.11.1",
-    "less-loader": "^5.0.0",
+    "node-sass": "^4.13.1",
+    "sass-loader": "^8.0.2",
     "nprogress": "^0.2.0",
     "qiankun": "^2.0.20",
     "redux": "^4.0.5",
@@ -44,13 +44,8 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/typescript"
+      "plugin:vue/essential"
     ],
-    "parserOptions": {
-      "parser": "@typescript-eslint/parser"
-    },
     "rules": {}
   },
   "browserslist": [

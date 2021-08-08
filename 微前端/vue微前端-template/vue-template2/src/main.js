@@ -20,8 +20,8 @@ let router = null;
 function render() {
   // 在 render 中创建 VueRouter，可以保证在卸载微应用时，移除 location 事件监听，防止事件污染
   router = new VueRouter({
-    // 运行在主应用中时，添加路由命名空间 /vue
-    base: window.__POWERED_BY_QIANKUN__ ? "/home" : "/",
+    // 运行在主应用中时，添加路由命名空间
+    base: window.__POWERED_BY_QIANKUN__ ? "/content-home" : "/",
     mode: "history",
     routes,
   });

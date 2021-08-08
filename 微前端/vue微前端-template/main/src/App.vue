@@ -1,22 +1,19 @@
 <template>
-  <a-config-provider prefixCls="cns">
-    <section id="cns-main-app">
-      <section class="cns-menu-wrapper">
+    <div id="cns-main-app">
+      <div>
         <main-menu :menus="menus" />
-      </section>
+      </div>
       <section class="cns-frame-wrapper">
         <!-- 主应用渲染区，用于挂载主应用路由触发的组件 -->
-        <router-view v-show="$route.name" />
+        <router-view v-show="$route.name&&!vueToken" />
 
         <!-- 子应用渲染区，用于挂载子应用节点 -->
         <section v-show="!$route.name" id="frame"></section>
       </section>
-    </section>
-  </a-config-provider>
+    </div>
 </template>
-
 <script>
-import MainMenu from "@/components/menu/index.vue";
+import MainMenu from "@/components/menu/menu.vue";
 export default{
   /**
    * 菜单列表
@@ -27,68 +24,37 @@ export default{
   components: {
     MainMenu
   },
+  watch:{
+    '$route':'getPath'
+  },
   data() {
     return {
+      vueToken:'',
        menus:[
         {
-          key: "Home",
-          title: "主页",
-          path: "/"
+          key: "VueMicroApp",
+          title: "Vue微应用一",
+          path: "/home"
         },
         {
-          key: "VueMicroApp",
-          title: "Vue 主页",
-          path: "/vue"
-        },
-        // {
-        //   key: "VueMicroAppList",
-        //   title: "Vue 列表页",
-        //   path: "/vue/list"
-        // }
+          key: "VueContent",
+          title: "Vue微应用二",
+          path: "/content-home"
+        }
       ]
     }
-  }
+  },
+  created() {
+    this.vueToken = localStorage.getItem("vueToken")
+  },
+  methods: {
+    getPath(){
+      this.vueToken = localStorage.getItem("vueToken");
+      this.$forceUpdate()
+    }
+  },
 }
 </script>
+<style lang="scss" scoped>
 
-<style lang="less" scoped>
-#cns-main-app {
-  height: 100%;
-  position: relative;
-  .cns-menu-wrapper {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 40;
-    width: 172px;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-  .cns-nav-wrapper {
-    position: fixed;
-    width: 100%;
-    min-width: 1060px;
-    padding-left: 172px;
-    left: 0;
-    top: 0;
-    z-index: 30;
-  }
-}
-
-.cns-frame-wrapper {
-  padding-left: 172px;
-  flex-grow: 1;
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
-
-#cns-frame {
-  width: 100%;
-  height: 100%;
-  > :first-child {
-    height: 100%;
-  }
-}
 </style>

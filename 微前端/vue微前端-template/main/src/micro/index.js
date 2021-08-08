@@ -1,7 +1,3 @@
-// 一个进度条插件
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
-import { message } from "ant-design-vue";
 import {
   registerMicroApps,
   addGlobalUncaughtErrorHandler,
@@ -20,14 +16,12 @@ registerMicroApps(apps, {
   // qiankun 生命周期钩子 - 加载前
   beforeLoad(app) {
     // 加载子应用前，加载进度条
-    NProgress.start();
     console.log("before load", app.name);
     return Promise.resolve();
   },
   // qiankun 生命周期钩子 - 挂载后
   afterMount(app) {
     // 加载子应用前，进度条加载完成
-    NProgress.done();
     console.log("after mount", app.name);
     return Promise.resolve();
   },
@@ -38,11 +32,10 @@ registerMicroApps(apps, {
  */
 addGlobalUncaughtErrorHandler((event) => {
   console.error(event);
-  const { message: msg } = event;
   // 加载失败时提示
-  if (msg && msg.includes("died in status LOADING_SOURCE_CODE")) {
-    message.error("子应用加载失败，请检查应用是否可运行");
-  }
+  // if (msg && msg.includes("died in status LOADING_SOURCE_CODE")) {
+  //   this.message.error("子应用加载失败，请检查应用是否可运行");
+  // }
 });
 
 // 导出 qiankun 的启动函数

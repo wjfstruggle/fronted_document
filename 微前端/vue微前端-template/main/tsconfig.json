@@ -24,6 +24,6 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/config/index.js", "src/routes/index.js", "src/main.ts", "src/micro/index.js", "src/micro/apps.js", "src/apis/index.js"  ],
+, "src/config/index.js", "src/router/index.js", "src/main.js", "src/micro/index.js", "src/micro/apps.js", "src/apis/index.js"  ],
   "exclude": ["node_modules"]
 }

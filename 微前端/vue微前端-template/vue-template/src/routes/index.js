@@ -1,4 +1,4 @@
-import Home from "@/pages/home/index.vue";
+import Home from "@/pages/home/home.vue";
 
 const routes = [
   {
@@ -6,11 +6,6 @@ const routes = [
     name: 'Home',
     component: Home
   },
-  {
-    path: '/list',
-    name: 'List',
-    component: () => import('@/pages/list/index.vue')
-  }
 ]
 
 export default routes
