@@ -30,8 +30,17 @@
             {
               flag: false,
               name: '李四'
+            },
+            {
+              flag: false,
+              name: '王五'
             }
           ]
+        }
+      },
+      computed:{
+        userList(){
+          return this.list.filter(item => item.flag)
         }
       }
     })
