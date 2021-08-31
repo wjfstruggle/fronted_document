@@ -6,7 +6,12 @@ class ShoppingList extends React.Component {
     this.state = {
       numbers:[1, 2, 3, 4, 5],
       inputValue:'',
-      selectValue:'coconut'
+      selectValue:'coconut',
+      isToggleOn:true,
+      item:{
+        id: 123,
+        name:'233'
+      }
     };
   }
   clickHandel = (event) => {
@@ -24,6 +29,16 @@ class ShoppingList extends React.Component {
     alert(this.state.selectValue);
     event.preventDefault();
   }
+  toggleClick =() => {
+    this.setState({
+      isToggleOn: !this.state.isToggleOn
+    })
+  }
+  // 删除
+  deleteInfo =(item) => {
+    console.log(item)
+  }
+  
   render() {
     return (
       <div className="shopping-list">
@@ -46,6 +61,10 @@ class ShoppingList extends React.Component {
         </label>
         <input type="submit" value="提交" />
       </form>
+      <button onClick={this.toggleClick}>
+        {this.state.isToggleOn? 'ON': 'OFF' }
+      </button>
+      <button onClick={this.deleteInfo.bind(this, this.state.item)}>删除</button>
       </div>
     );
   }
