@@ -1,5 +1,5 @@
 import React from 'react';
-import './assest/css/shopping-list.css'
+import './assest/css/shopping-list.scss'
 class ShoppingList extends React.Component {
   constructor(props) {
     super(props);
@@ -8,10 +8,16 @@ class ShoppingList extends React.Component {
       inputValue:'',
       selectValue:'coconut',
       isToggleOn:true,
+      loadingFlag:true,
       item:{
         id: 123,
         name:'233'
-      }
+      },
+      list:[
+        { name:'海阔天空',id:'1' },
+        { name:'光辉岁月',id:'2' },
+        { name:'情人',id:'3' },
+      ]
     };
   }
   clickHandel = (event) => {
@@ -38,8 +44,14 @@ class ShoppingList extends React.Component {
   deleteInfo =(item) => {
     console.log(item)
   }
-  
   render() {
+    const loading = () => {
+      // if(this.state.loadingFlag) {
+      //   return <div>loading ...</div>
+      // }
+      // return <div>加载完毕</div>
+      return this.state.loadingFlag?(<div>loading ...</div>):(<div>加载完毕</div>)
+    }
     return (
       <div className="shopping-list">
         <form onSubmit={this.handelSubmit}>
@@ -60,11 +72,15 @@ class ShoppingList extends React.Component {
           </select>
         </label>
         <input type="submit" value="提交" />
-      </form>
-      <button onClick={this.toggleClick}>
-        {this.state.isToggleOn? 'ON': 'OFF' }
-      </button>
-      <button onClick={this.deleteInfo.bind(this, this.state.item)}>删除</button>
+        </form>
+        <button onClick={this.toggleClick}>
+          {this.state.isToggleOn? 'ON': 'OFF' }
+        </button>
+        <button onClick={this.deleteInfo.bind(this, this.state.item)}>删除</button>
+        <div>{loading()}</div>
+        <ul>
+          {this.state.list.map(item => <li className="listItem" key={item.id}>{item.name}</li>)}
+        </ul>
       </div>
     );
   }

@@ -1,4 +1,0 @@
-# 搜索引擎访问
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
