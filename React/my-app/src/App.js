@@ -2,6 +2,7 @@ import './App.css';
 import ShoppingList from './ShoppingList';
 import Count from './count';
 import From from './from';
+import FromNone from './fromNone';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <ShoppingList Mark="Mark" />
       <Count />
       <From />
+      <FromNone />
     </div>
   );
 }
