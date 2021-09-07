@@ -1,16 +1,18 @@
 import './App.css';
-import ShoppingList from './ShoppingList';
-import Count from './count';
-import From from './from';
-import FromNone from './fromNone';
+// import ShoppingList from './ShoppingList';
+// import Count from './count';
+// import From from './from';
+// import FromNone from './fromNone';
+import Send from './send';
 
 function App() {
   return (
     <div className="App">
-      <ShoppingList Mark="Mark" />
+      {/* <ShoppingList Mark="Mark" />
       <Count />
       <From />
-      <FromNone />
+      <FromNone /> */}
+      <Send />
     </div>
   );
 }
