@@ -26,6 +26,7 @@ class Child extends React.Component {
   }
   getSendMsg =() => {
     this.props.getMsg(this.state.msg)
+    // this.$emit('getMsg',{a:'参数'}) vue 写法
   }
   render() {
     return (
