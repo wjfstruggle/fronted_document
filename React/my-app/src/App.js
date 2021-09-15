@@ -3,7 +3,8 @@ import './App.css';
 // import Count from './count';
 // import From from './from';
 // import FromNone from './fromNone';
-import Send from './send';
+// import Send from './send';
+import PropsSend from './components/propsSend';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Count />
       <From />
       <FromNone /> */}
-      <Send />
+      <PropsSend name="jack" age={19}/>
     </div>
   );
 }

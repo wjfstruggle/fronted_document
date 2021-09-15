@@ -23,8 +23,8 @@ class Send extends React.Component {
   // 发表评论
   addComment =() => {
     const { comments,username,content } = this.state;
-    if(username === ''&&content === "") {
-      return;
+    if(username.trim() === ''||content.trim() === "") {
+      return false;
     }
     const commentsNew = [{
       id:Math.random(),
@@ -44,14 +44,15 @@ class Send extends React.Component {
     })
   }
   render() {
+    const { username,content } = this.state
     return (
       <div className="send">
         留言板
         <div className="username-box">
-          <input name="username" onChange={this.sendFrom} className="username" type="text" placeholder="请输入用户名"/>
+          <input name="username" value={username} onChange={this.sendFrom} className="username" type="text" placeholder="请输入用户名"/>
         </div>
         <div>
-          <textarea name="content" onChange={this.sendFrom} className="content" type="text" cols="10" rows="10"  placeholder="请输入评论内容"/>
+          <textarea value={content } name="content" onChange={this.sendFrom} className="content" type="text" cols="10" rows="10"  placeholder="请输入评论内容"/>
         </div>
         {/* 发表评论 */}
         <button className="btn" onClick={this.addComment}>发表评论</button>
