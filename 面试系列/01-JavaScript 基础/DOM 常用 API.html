@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM 常用 API</title>
+</head>
+<body>
+  <div id="view"></div>
+  <div class="div"></div>
+  <button id="btn">点击</button>
+  <script>
+    let btn = document.getElementById('btn');
+    let view = document.getElementById('view');
+    let span = document.createElement('span')
+    let img = document.createElement('img')
+    let div = document.querySelector('.div')
+    div.innerHTML = 'javas如此平'
+    btn.onclick = function() {
+      view.innerHTML = '你好'
+      view.appendChild(span)
+      view.appendChild(img)
+      img.src = 'https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1054db7b0a1042f98168017db943bb50~tplv-k3u1fbpfcp-no-mark:240:240:240:160.awebp'
+    }
+  </script>
+</body>
+</html>
