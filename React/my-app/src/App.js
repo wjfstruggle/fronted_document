@@ -4,7 +4,9 @@ import './App.css';
 // import From from './from';
 // import FromNone from './fromNone';
 // import Send from './send';
-import PropsSend from './components/propsSend';
+// import PropsSend from './components/propsSend';
+// import PropsSend1 from './components/propsSend1';
+import BorderSend from './components/borderSend';
 
 function App() {
   return (
@@ -13,7 +15,7 @@ function App() {
       <Count />
       <From />
       <FromNone /> */}
-      <PropsSend name="jack" age={19}/>
+      <BorderSend />
     </div>
   );
 }
