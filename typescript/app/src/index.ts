@@ -90,7 +90,36 @@ const getValue = <T>(key:T,value:string):string[] => {
 }
 console.log(getValue<string[]>(['a','b'],'c'));
 
+// 类型保护
+const valueList = [123, 'string']
+const getRandomValue = () => {
+  const num = Math.random() * 10;
+  return num < 5 ? valueList[0] : valueList[1];
+}
+const item = getRandomValue();
+if((<string>item).length) {
+  console.log((<string>item).length);
+}else {
+  console.log((<number>item).toFixed());
+}
 
+// 类型别名
+
+type age = string;
+let age1:age = "12"
+
+// 类型别名和枚举
+
+type animate<T> = {x: T, y: T};
+const eatObj:animate<number> = {
+  x: 1,
+  y:2
+}
+
+type Child<T> = {
+  current: T,
+  child? :Child<T>
+}
 
 
 
