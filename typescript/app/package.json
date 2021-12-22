@@ -1,0 +1,26 @@
+{
+  "name": "appTs",
+  "version": "1.0.0",
+  "description": "ts学习",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --mode=development --config build/webpack.config.js",
+    "build": "cross-env NODE_ENV=production webpack --mode=production --config ./build/webpack.config.js"
+  },
+  "keywords": [],
+  "author": "wjf",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "cross-env": "^7.0.3",
+    "html-webpack-plugin": "^5.5.0",
+    "ts-loader": "^9.2.6",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.0"
+  }
+}
