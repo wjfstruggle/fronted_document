@@ -67,6 +67,29 @@ getValueName({firstName:'hello',lastName:'ketty'})
 const nameString:string = "jhahh"
 // nameString = '23' // 常量无法分配
 
+// 函数类型
+const add = (x:number,y:number):number => {
+  return x + y
+}
+console.log(add(1,2));
+
+// 泛型和函数
+const getArray = (value:any,times:number=5):any[] => {
+  return new Array(times).fill(value)
+}
+console.log(getArray("12345",5));//['12345', '12345', '12345', '12345', '12345']
+
+// 泛型改写
+const getArray1 = <T>(value:T,times:number=5):any[] => {
+  return new Array(times).fill(value)
+}
+console.log(getArray1<number[]>([123,4],5));
+
+const getValue = <T>(key:T,value:string):string[] => {
+  return new Array(1).fill(value)
+}
+console.log(getValue<string[]>(['a','b'],'c'));
+
 
 
 
