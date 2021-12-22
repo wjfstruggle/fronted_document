@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    var follow = [
+      {
+        "processStartUser": "1111",
+        "taskCreateTime": 1590634371219,
+        "taskCompleteTime": 1590634371221,
+        "taskHandler": "1111",
+        "taskHandlerType": null,
+        "taskHandlerOpinion": null,
+        "taskHandlerLink": null,
+        "taskHandlerDescription": null,
+        "taskPractitioner": "1111",
+        "taskId": null,
+        "taskName": "开始",
+        "actId": "start",
+        "actName": "开始",
+        "process_defined_id": null,
+        "process_instance_id": null,
+        "taskAuditStatus": "approving",
+        "taskStatus": null,
+        "logisticsNum": null
+      },
+      {
+        "processStartUser": "1111",
+        "taskCreateTime": 1590634371221,
+        "taskCompleteTime": 1590634371236,
+        "taskHandler": "1111",
+        "taskHandlerType": null,
+        "taskHandlerOpinion": null,
+        "taskHandlerLink": null,
+        "taskHandlerDescription": null,
+        "taskPractitioner": "1111",
+        "taskId": "472718072751329281",
+        "taskName": "代理商申请",
+        "actId": "service",
+        "actName": "代理商申请",
+        "process_defined_id": null,
+        "process_instance_id": null,
+        "taskAuditStatus": "approving",
+        "taskStatus": null,
+        "logisticsNum": null
+      },
+      {
+        "processStartUser": "1111",
+        "taskCreateTime": 1590634371237,
+        "taskCompleteTime": null,
+        "taskHandler": "刘智慧",
+        "taskHandlerType": null,
+        "taskHandlerOpinion": null,
+        "taskHandlerLink": null,
+        "taskHandlerDescription": null,
+        "taskPractitioner": "刘智慧",
+        "taskId": "472718072835215362",
+        "taskName": "商务审批",
+        "actId": "business",
+        "actName": "商务审批",
+        "process_defined_id": null,
+        "process_instance_id": null,
+        "taskAuditStatus": "approving",
+        "taskStatus": null,
+        "logisticsNum": null
+      },
+      {
+        "processStartUser": "1111",
+        "taskCreateTime": 1590634371247,
+        "taskCompleteTime": null,
+        "taskHandler": "Lisa",
+        "taskHandlerType": null,
+        "taskHandlerOpinion": null,
+        "taskHandlerLink": null,
+        "taskHandlerDescription": null,
+        "taskPractitioner": "Lisa",
+        "taskId": "472718072860381187",
+        "taskName": "商务审批",
+        "actId": "business",
+        "actName": "商务审批",
+        "process_defined_id": null,
+        "process_instance_id": null,
+        "taskAuditStatus": "approving",
+        "taskStatus": null,
+        "logisticsNum": null
+      },
+      {
+        "processStartUser": "1111",
+        "taskCreateTime": 1590634371253,
+        "taskCompleteTime": null,
+        "taskHandler": "KiKi",
+        "taskHandlerType": null,
+        "taskHandlerOpinion": null,
+        "taskHandlerLink": null,
+        "taskHandlerDescription": null,
+        "taskPractitioner": "KiKi",
+        "taskId": "472718072885547009",
+        "taskName": "商务审批",
+        "actId": "business",
+        "actName": "商务审批",
+        "process_defined_id": null,
+        "process_instance_id": null,
+        "taskAuditStatus": "approving",
+        "taskStatus": null,
+        "logisticsNum": null
+      },
+      {
+        "processStartUser": "1111",
+        "taskCreateTime": 1590634371258,
+        "taskCompleteTime": null,
+        "taskHandler": "",
+        "taskHandlerType": "",
+        "taskHandlerOpinion": "",
+        "taskHandlerLink": "",
+        "taskHandlerDescription": "",
+        "taskPractitioner": "测试商务",
+        "taskId": "472718072906518531",
+        "taskName": "商务审批",
+        "actId": "business",
+        "actName": "商务审批",
+        "process_defined_id": null,
+        "process_instance_id": null,
+        "taskAuditStatus": "approving",
+        "taskStatus": "approvePending",
+        "logisticsNum": ""
+      }
+    ]
+    //Map数组中的key集合数组
+    var allActList = follow.map(function (item) {
+      return item.actName
+    })
+    // key数组去重
+    // var equalList = _.uniq(allActList)
+    // 创建Map并set数据
+    var mapList = new Map()
+    allActList.map(function (item) {
+      var valueList = []
+      follow.map(function (e) {
+        if (e.actName == item)
+          valueList.push(e)
+        mapList.set(item, valueList)
+      })
+    })
+    console.log(mapList)
+  </script>
+</body>
+
+</html>
