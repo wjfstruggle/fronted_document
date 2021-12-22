@@ -6,12 +6,19 @@ import './App.css';
 // import Send from './send';
 // import PropsSend from './components/propsSend';
 // import BorderSend from './components/border';
-import LifeCycle1 from './生命周期/lifeCycle1';
+// import LifeCycle3 from './生命周期/LifeCycle3';
+import RenderProps from './高阶组件/renderProps'
 
 function App() {
   return (
     <div className="App">
-      <LifeCycle1 />
+      <RenderProps render={mouse => {
+        return (
+          <p>
+            鼠标的位置：{mouse.x} {mouse.x}
+          </p>
+        )
+      }} />
     </div>
   );
 }
