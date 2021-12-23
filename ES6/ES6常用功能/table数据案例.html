@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <table border="1">
+    <div class="div">
+      <button>年龄从小到大</button>
+      <button>年龄从大到小</button>
+      <button>默认排序</button>
+    </div>
+    <header>
+      <button>只显示女生</button>
+      <button>只显示男生</button>
+      <button>默认显示</button>
+    </header>
+    <tbody>
+      <thead>
+        <th>id</th>
+        <th>姓名</th>
+        <th>年龄</th>
+        <th>性别</th>
+      </thead>
+    </tbody>
+  </table>
+  <script>
+    let dataList = [
+      {
+        "id":1,
+        "name":'小明',
+        "age":20,
+        "sex":'男',
+      },{
+        "id":2,
+        "name":'小红',
+        "age":29,
+        "sex":'女',
+      },{
+        "id":3,
+        "name":'小芳',
+        "age":24,
+        "sex":'女',
+      },{
+        "id":4,
+        "name":'小美',
+        "age":18,
+        "sex":'女',
+      },{
+        "id":5,
+        "name":'小刚',
+        "age":23,
+        "sex":'男',
+      }
+    ]
+    // 数据渲染函数
+    function render(data) {
+      let tbody = document.querySelector("tbody");
+      tbody.innerHTML = ""
+      data.forEach(item => {
+        let tr = document.createElement("tr")
+        tr.innerHTML = `
+        <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td>${item.age}</td>
+          <td>${item.sex}</td>
+        `
+        tbody.appendChild(tr)
+      })
+    }
+    render(dataList);
+    // 年龄从小到大
+    // let sortAge = dataList => dataList.sort((age1,age2) => age1.age - age2.age)
+    // console.log(sortAge(dataList))
+
+    // let sortAge2 = dataList => dataList.sort((age1,age2) => age2.age - age1.age)
+    // console.log(sortAge2(dataList))
+
+    // 存index索引
+    let ageIndex = 2;
+    let sexIndex = 2;
+    let sortArr = [dataList => dataList.map(item => item).sort((age1,age2) => age1.age - age2.age),
+    dataList => dataList.map(item => item).sort((age1,age2) => age2.age - age1.age),
+    dataList=>dataList]
+    let btns = document.querySelectorAll("div button");
+    btns.forEach((btn, index) => {
+      btn.onclick = function() {
+        btns.forEach(item => {
+          item.classList.remove("active")
+        })
+        btn.classList.add("active")
+        ageIndex = index;
+        let res = sortArr[index](dataList)
+        let result = showSex[sexIndex](res)
+        render(result);
+      }
+    })
+
+    let showGirs = (dataList) => dataList.filter(item => item.sex == "女")
+    let showBoy = (dataList) => dataList.filter(item => item.sex == "男")
+    let showSex = [(dataList) => dataList.filter(item => item.sex == "女"),
+    (dataList) => dataList.filter(item => item.sex == "男"),dataList => dataList]
+    console.log(showGirs(dataList));
+    console.log(showBoy(dataList));
+    let btns2 = document.querySelectorAll("header button");
+    btns2.forEach((btn, index) => {
+      btn.onclick = function() {
+        btns2.forEach(item => {
+          item.classList.remove("active")
+        })
+        btn.classList.add("active")
+        sexIndex = index
+        let res = showSex[index](dataList)
+        let result = sortArr[ageIndex](res)
+        render(result);
+      }
+    })
+  </script>
+</body>
+</html>
+<style>
+  .active {
+    color: brown;
+    background-color: #fff;
+  }
+</style>
