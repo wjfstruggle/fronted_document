@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网易云音乐案例</title>
+</head>
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+  }
+  .music{
+    margin: 50px;
+    border: 2px solid #ccc;
+    width: 500px;
+    height: 100%;
+    padding: 10px;
+    text-align: center;
+  }
+  h3 {
+    border-bottom: 2px solid #ccc;
+  }
+  li {
+    border-bottom: 1px solid #ccc;
+    line-height: 40px;
+    text-align: left;
+    margin-left: 30px;
+  }
+  .all{
+    text-align: left;
+    margin-left: 30px;
+  }
+</style>
+<body>
+  <div class="music">
+    <h3>百度云音乐榜单</h3>
+    <ul id="ul">
+    </ul>
+    <div class="all">
+      <input type="checkbox" class="checkedAll">全选/全不选
+      <a href="#" class="removeAll">删除</a>
+      <input type="text" name="" id="addSong"><button>添加</button>
+    </div>
+  </div>
+</body>
+<script>
+  let data = [
+    {
+      id:'1',
+      name:"一路向北-周杰伦",
+      checked:false,
+      connectd:false
+    },
+    {
+      id:'2',
+      name:"单车-陈奕迅",
+      checked:true,
+      connectd:false
+    },{
+      id:'3',
+      name:"遥远的她-张学友",
+      checked:false,
+      connectd:true
+    },{
+      id:'4',
+      name:"海阔天空-beyong",
+      checked:false,
+      connectd:false
+    },{
+      id:'5',
+      name:"他说-林俊杰",
+      checked:true,
+      connectd:false
+    }
+  ]
+  // 数据渲染函数
+  function render(data) {
+    let ul = document.querySelector("#ul")
+    ul.innerHTML = ""
+    data?.forEach((item,index) => {
+      let li = document.createElement("li")
+      li.innerHTML = `<input type="checkbox" class="check" ${item.checked?'checked':''}>
+                      <span class="title">${item.name}</span>
+                      <span>${!item.connectd?'<a href="#" class="connect">收藏</a>':
+                      '<a href="#" class="unConnect">取消收藏</a>'}</span>                  
+                      <a href="#" class="remove">删除</a>`
+                      
+      ul.appendChild(li)
+    })
+    addEvent();
+  }
+  render(data)
+
+  // 增删改查函数
+ function addEvent() {
+    let lis = document.querySelectorAll("#ul li")
+    lis.forEach((li,index) => {
+      li.onclick = e => {
+        let type = e.target.className
+        switch(type) {
+          case 'check':
+            data[index].checked = e.target.checked
+          break;
+          case 'connect':
+            data[index].connectd = true
+          break;
+          case 'unConnect':
+            data[index].connectd = false
+          break;
+          case 'remove':
+            data.splice(index,1)
+          break;
+        }
+        render(data)
+      }
+    })
+  }
+  // 添加歌曲
+  let addSong = document.querySelector("#addSong")
+  let btn = document.querySelector("button")
+  let removeAll = document.querySelector(".removeAll")
+  let checkedAll = document.querySelector(".checkedAll")
+  let name = ""
+  let checkAllFlag = false
+  addSong.oninput = e => {
+    name = e.target.value;
+  }
+  btn.onclick = () => {
+    if(name == "") {
+      return;
+    }
+    data.push({
+      id:Math.random(),
+      name,
+      checked:false,
+      connectd:false
+    })
+    render(data)
+  }
+  checkedAll.onclick = e => {
+    checkAllFlag = e.target.checked
+    data.forEach(item => {
+      item.checked =  checkAllFlag?true:false;
+    })
+    render(data)
+  }
+  removeAll.onclick = () => {
+    if(checkAllFlag) {
+      data = []
+      render(data)
+    }else {
+      return
+    }
+    
+  }
+</script>
+</html>
