@@ -48,8 +48,9 @@
   </div>
 </template>
 <script lang="ts">
-import LoginHeader from './LoginHeader.vue'
-import { Component, Provide, Vue} from "vue-property-decorator"
+import LoginHeader from './LoginHeader.vue';
+import {LoginReq} from "../../api/apis";
+import { Component, Provide, Vue} from "vue-property-decorator";
 @Component({
   components:{
     LoginHeader
@@ -61,12 +62,10 @@ export default class login extends Vue {
   @Provide() ruleForm:{
     // 装饰器名称
     username:string,
-    password:string|number,
-    autoLogin:boolean
+    password:string|number
   } = {
     username:"",
-    password:"",
-    autoLogin:true
+    password:""
   }
   @Provide() rules = {
     username:[{required:true,message:"请输入账号",triggle:'blur'}],
@@ -75,11 +74,16 @@ export default class login extends Vue {
   handleSubmit():void {
     (this.$refs["refid"] as any).validate((valid:boolean) => {
       if(valid) {
-        this.loginLoading = true
-        localStorage.setItem("tokenTS","tokenTS");
-        this.$router.push("/");
-      }else {
-        this.loginLoading = false
+        this.loginLoading = true;
+        (this as any).$axios.post(
+          "user/login", this.ruleForm).then((res:any) => {
+            this.loginLoading = false;
+            // 存储token
+            localStorage.setItem("tsToken", res.data.token);
+            (this as any).$router.push("/");
+          }).catch(() => {
+          this.loginLoading = false;
+        })
       }
     })
   }
