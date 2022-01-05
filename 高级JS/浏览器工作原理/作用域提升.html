@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // var n = 100;
+    // function foo () {
+    //   var n = 10
+    // }
+    // console.log(n); // 100
+
+    // function foo() {
+    //   console.log(n); // undefined
+    //   var n = 20
+    //   console.log(n); // 20
+    // }
+    // var n = 100;
+    // foo();
+
+    // var n = 100;
+    // function foo1() {
+    //   console.log("foo1",n); // 100
+    // }
+    // function foo2() {
+    //   var n = 200;
+    //   console.log("foo2",n); // 200
+    //   foo1();
+    // }
+
+    // foo2();
+    // console.log("全局",n); // 100
+    var a = 100
+    function foo() {
+      console.log(a); // undefined
+      return; // 全局上下文 会把声明提升优先
+      var a = 200;
+    }
+    foo();
+    // function foo() {
+    //   var a = b = 100;
+    // }
+    // foo()
+    // console.log(a); // 报错
+    // console.log(b); // 100
+  </script>
+</body>
+</html>
