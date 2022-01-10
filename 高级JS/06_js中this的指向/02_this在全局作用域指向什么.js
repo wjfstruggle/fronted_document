@@ -4,3 +4,5 @@
 // Node环境: {}
 console.log(this)
 // console.log(window)
+
+// node环境下 this 是一个空对象 {}

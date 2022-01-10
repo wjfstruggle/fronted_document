@@ -35,3 +35,16 @@ names.forEach(function(item) {
 names.map(function(item) {
   console.log(item, this)
 }, "cba")
+
+function foo() {
+  console.log(this);
+}
+
+function Person(name,age) {
+  this.name = name;
+  this.age = age;
+  this.eat = foo
+}
+var p1 = new Person("wujf",20)
+p1.eat() // Person
+p1.eat.call("aaa") // String {'aaa'}

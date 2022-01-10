@@ -33,9 +33,17 @@
 // }
 
 // var bar = obj.foo
-// bar() // window
+// bar() // window 独立调用
 
-
+var obj = {
+  name:"wjf",
+  eat() {
+    console.log(this);
+  }
+}
+// obj.eat() // obj
+var eat = obj.eat
+eat() // window
 // 4.案例四:
 // function foo() {
 //   console.log(this)
@@ -49,19 +57,19 @@
 // bar() // window
 
 // 5.案例五:
-function foo() {
-  function bar() {
-    console.log(this)
-  }
-  return bar
-}
+// function foo() {
+//   function bar() {
+//     console.log(this)
+//   }
+//   return bar
+// }
 
-var fn = foo()
-fn() // window
+// var fn = foo()
+// fn() // window
 
-var obj = {
-  name: "why",
-  eating: fn
-}
+// var obj = {
+//   name: "why",
+//   eating: fn
+// }
 
-obj.eating() // 隐式绑定
+// obj.eating() // 隐式绑定

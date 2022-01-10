@@ -30,6 +30,6 @@ var person2 = { name: 'person2' }
 // person1.foo3.call(person2)(); // window(独立函数调用)
 // person1.foo3().call(person2); // person2(最终调用返回函数式, 使用的是显示绑定)
 
-// person1.foo4()(); // person1(箭头函数不绑定this, 上层作用域this是person1)
+// person1.foo4()(); // person1(箭头函数不绑定this, 上层作用域this是person1) {}不是作用域，fn才有
 // person1.foo4.call(person2)(); // person2(上层作用域被显示的绑定了一个person2)
 // person1.foo4().call(person2); // person1(上层找到person1)

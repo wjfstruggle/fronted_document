@@ -30,3 +30,15 @@ var obj = {
 }
 
 obj.getData()
+
+var obj2 = {
+  data:[],
+  getDataList() {
+    var nums = ["a","b","C"];
+    setTimeout(() => {
+      this.data.push(...nums);
+      console.log(this);
+    })
+  }
+}
+obj2.getDataList();
