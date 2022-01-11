@@ -26,3 +26,6 @@ console.log(sum2(10)(20)(30))
 var sum3 = x => y => z => x + y + z
 console.log(sum3(10)(20)(30))
 
+var count = x => y => z => x * y * z
+
+console.log("函数柯里化", count(1)(2)(3));

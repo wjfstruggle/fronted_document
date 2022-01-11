@@ -16,7 +16,7 @@ Function.prototype.jkCall = function(thisArg,...args) {
   thisArg.fn = fn;
 
   var result = thisArg.fn(...args)
-  delete thisArg.fn()
+  delete thisArg.fn
   return result
 }
 
