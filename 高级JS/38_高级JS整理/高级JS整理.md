@@ -226,9 +226,159 @@ console.log(b) // 10
   - 自动管理内存：比如Java、JavaScript、Python、Swift、Dart等，它们有自动帮助我们管理内存；  
 - 我们可以知道JavaScript通常情况下是不需要手动来管理的 。
 
+#### JS的内存管理  
 
+- JS对于基本数据类型内存的分配会在执行时，直接在栈空间进行分配；  
+
+- JS对于复杂数据类型内存的分配会在堆内存中开辟一块空间，并且将这块空间的指针返回值变量引用；  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6c0b946d0b4e4dd3b84bddd814daf029~tplv-k3u1fbpfcp-watermark.image?)
+
+#### JS的垃圾回收  
+
+- 因为内存的大小是有限的，所以当内存不再需要的时候，我们需要对其进行释放，以便腾出更多的内存空间。  
+- 在手动管理内存的语言中，我们需要通过一些方式自己来释放不再需要的内存，比如free函数：  
+  - 但是这种管理的方式其实非常的低效，影响我们编写逻辑的代码的效率；  
+  - 并且这种方式对开发者的要求也很高，并且一不小心就会产生内存泄露；  
+- 所以大部分现代的编程语言都是有自己的垃圾回收机制：  
+  - 垃圾回收的英文是Garbage Collection，简称GC；  
+  - 对于那些不再使用的对象，我们都称之为是垃圾，它需要被回收，以释放更多的内存空间；  
+  - 而我们的语言运行环境，比如Java的运行环境JVM，JavaScript的运行环境js引擎都会内存 垃圾回收器；  
+  - 垃圾回收器我们也会简称为GC，所以在很多地方你看到GC其实指的是垃圾回收器；  
+- 但是这里又出现了另外一个很关键的问题：GC怎么知道哪些对象是不再使用的呢？  
+
+常见的GC算法 – 引用计数  
+
+- 当一个对象有一个引用指向它时，那么这个对象的引用就+1，当一个对象的引用为0时，这个对象就可以被销毁掉；  
+- 这个算法有一个很大的弊端就是会产生循环引用；  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f5027109224e4472a6b1a9e4cdf5d919~tplv-k3u1fbpfcp-watermark.image?)
+
+```js
+// 引用计数存在一个很大的弊端: 循环引用
+var obj1 = {fn: obj2}
+var obj2 = {fn: obj1}
+```
+
+常见的GC算法 – 标记清除  
+
+- 这个算法是设置一个根对象（root object），垃圾回收器会定期从这个根开始，找所有从根开始有引用到的对象，对于哪些没有引用到的对象，就认为是不可用的对象；  
+- 这个算法可以很好的解决循环引用的问题  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/93c224eb9c334834ae0b3fe72b0900c5~tplv-k3u1fbpfcp-watermark.image?)
+
+- JS引擎比较广泛的采用的就是标记清除算法，当然类似于V8引擎为了进行更好的优化，它在算法的实现细节上也会结合一些其他的算法。  
+
+#### JS中闭包
+
+**JS中闭包的定义  **
+
+- 一个普通的函数function，如果它可以访问外层作用于的自由变量，那么这个函数就是一个闭包；  
+- 从广义的角度来说：JavaScript中的函数都是闭包；  
+- 从狭义的角度来说：JavaScript中一个函数，如果访问了外层作用于的变量，那么它是一个闭包；  
+
+如果我们编写了如下的代码，它一定是形成了闭包的：  
+
+```js
+function makeAddr(count) {
+  return function add2(num) {
+    console.log(count + num);
+  }
+}
+var add10 = makeAddr(2)
+add10(10)
+```
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cef6a053b7df4f7eab9400bfafc24315~tplv-k3u1fbpfcp-watermark.image?)
+
+#### 闭包的执行过程  
+
+- 那么函数继续执行呢？  
+  - 这个时候makeAdder函数执行完毕，正常情况下我们的AO对象会被释放；  
+  - 但是因为在0xb00的函数中有作用域引用指向了这个AO对象，所以它不会被释放掉；  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/92254248d8ae4f55805a86e4fe6f8863~tplv-k3u1fbpfcp-watermark.image?)
+
+#### 闭包的内存泄露  
+
+- 那么我们为什么经常会说闭包是有内存泄露的呢？  
+  - 在上面的案例中，如果后续我们不再使用add10函数了，那么该函数对象应该要被销毁掉，并且其引用着的父作用域AO也应该被销毁掉；  
+  - 但是目前因为在全局作用域下add10变量对0xb00的函数对象有引用，而0xb00的作用域中AO（0x200）有引用，所以最终会造成这些内存都是无法被释放的；  
+  - 所以我们经常说的闭包会造成内存泄露，其实就是刚才的引用链中的所有对象都是无法释放的；  
+- 那么，怎么解决这个问题呢？  
+  - 因为当将add10设置为null时，就不再对函数对象0xb00有引用，那么对应的AO对象0x200也就不可达了；  
+  - 在GC的下一次检测中，它们就会被销毁掉；  
+
+```js
+add10 = null;
+```
 
 ### 三、JS函数的this指向  
+
+#### 为什么需要this？  
+
+在常见的编程语言中，几乎都有this这个关键字（Objective-C中使用的是self），但是JavaScript中的this和常见的面向对象语言中的this不太一样：  
+
+- 常见面向对象的编程语言中，比如Java、C++、Swift、Dart等等一系列语言中，this通常只会出现在类的方法中。  
+- 也就是你需要有一个类，类中的方法（特别是实例方法）中，this代表的是当前调用对象。
+- 但是JavaScript中的this更加灵活，无论是它出现的位置还是它代表的含义。  
+
+我们来看一下编写一个obj的对象，有this和没有this的区别  
+
+![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/53a952d85f354d069389ed527232923f~tplv-k3u1fbpfcp-watermark.image?)
+
+从打印结果上来看，有this和没有this区别不大。
+
+#### this到底指向什么呢？  
+
+- 我们先说一个最简单的，this在全局作用于下指向什么？  
+  - 这个问题非常容易回答，在浏览器中测试就是指向window  
+  - node环境下，this指向一个空对象 `{}`
+
+```js
+console.log(this); // window
+var name = "wujf"
+console.log(this.name); // "wujf"
+console.log(window.name);// "wujf"
+console.log(this); // node环境下 {} 
+```
+
+- 但是，开发中很少直接在全局作用于下去使用this，通常都是在**函数中使用**。  
+  - 所有的函数在被调用时，都会创建一个执行上下文：  
+  - 这个上下文中记录着函数的调用栈、AO对象等；  
+  - this也是其中的一条记录；  
+
+- 我们先来看一个让人困惑的问题：  
+  - 定义一个函数，我们采用三种不同的方式对它进行调用，它产生了三种不同的结果  
+
+```js
+// 定义一个函数
+function foo() {
+  console.log(this);
+}
+// 1、直接调用
+foo(); // window
+
+// 2、foo函数放入obj里面调用
+var obj = {
+  names: "wujf",
+  foo:foo
+}
+
+obj.foo(); // obj对象
+
+// 3、通过call,bind,apply绑定调用
+foo.call("abc") // String {'abc'}
+foo.call(123) // Number {123}
+```
+
+- 这个的案例可以给我们什么样的启示呢？  
+  1. 函数在调用时，JavaScript会默认给this绑定一个值；  
+  2. this的绑定和定义的位置（编写的位置）没有关系；  
+  3. this的绑定和调用方式以及调用的位置有关系；  
+  4. this是在运行时被绑定的；  
+
+
 
 ### 四、JS面向对象
 
