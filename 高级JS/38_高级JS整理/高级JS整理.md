@@ -331,9 +331,9 @@ add10 = null;
 
 #### this到底指向什么呢？  
 
-- 我们先说一个最简单的，this在全局作用于下指向什么？  
+- 我们先说一个最简单的，`this`在全局作用于下指向什么？  
   - 这个问题非常容易回答，在浏览器中测试就是指向window  
-  - node环境下，this指向一个空对象 `{}`
+  - `node`环境下，this指向一个空对象 `{}`
 
 ```js
 console.log(this); // window
@@ -343,10 +343,10 @@ console.log(window.name);// "wujf"
 console.log(this); // node环境下 {} 
 ```
 
-- 但是，开发中很少直接在全局作用于下去使用this，通常都是在**函数中使用**。  
+- 但是，开发中很少直接在全局作用于下去使用`this`，通常都是在**函数中使用**。  
   - 所有的函数在被调用时，都会创建一个执行上下文：  
-  - 这个上下文中记录着函数的调用栈、AO对象等；  
-  - this也是其中的一条记录；  
+  - 这个上下文中记录着函数的调用栈、`AO`对象等；  
+  - `this`也是其中的一条记录；  
 
 - 我们先来看一个让人困惑的问题：  
   - 定义一个函数，我们采用三种不同的方式对它进行调用，它产生了三种不同的结果  
@@ -378,9 +378,975 @@ foo.call(123) // Number {123}
   3. this的绑定和调用方式以及调用的位置有关系；  
   4. this是在运行时被绑定的；  
 
+<u>那么this到底是怎么样的绑定规则呢？一起来学习一下吧</u> 
 
+1. 绑定一：默认绑定；  
+2. 绑定二：隐式绑定；  
+3. 绑定三：显示绑定；  
+4. 绑定四：new绑定；  
+
+#### 规则一：默认绑定  
+
+什么情况下使用默认绑定呢？独立函数调用 。
+
+- 独立的函数调用我们可以理解成函数没有被绑定到某个对象上进行调用；  
+- 我们通过几个案例来看一下，常见的默认绑定  
+
+```js
+// 案例1
+function foo() {
+  console.log(this); // window
+}
+foo()
+```
+
+```js
+// 案例2
+function test1() {
+  console.log(this);// window
+  test2()
+}
+function test2() {
+  console.log(this);// window
+  test3()
+}
+function test3() {
+  console.log(this);// window
+}
+```
+
+```js
+// 案例3
+function bar(fn) {
+  fn()
+}
+
+var obj = {
+  name:"wujf",
+  bar() {
+    console.log(this);// window
+  }
+}
+
+bar(obj.bar)
+```
+
+#### 规则二：隐式绑定  
+
+- 另外一种比较常见的调用方式是通过某个对象进行调用的：  
+  - 也就是它的调用位置中，是通过某个对象发起的函数调用。  
+- 我们通过几个案例来看一下，常见的默认绑定  
+
+```js
+// 案例1
+function foo() {
+  console.log(this); // obj对象
+}
+
+var obj = {
+  name:"wujf",
+  foo:foo
+}
+
+obj.foo();
+```
+
+```js
+//案例2
+function foo() {
+  console.log(this); // obj1对象
+}
+
+var obj1 = {
+  name:"obj1",
+  foo:foo
+}
+var obj2 = {
+  name:"obj2",
+  obj1:obj1
+}
+
+obj2.obj1.foo()
+```
+
+```js
+// 案例3
+function foo() {
+  console.log(this); // Window对象
+}
+
+var obj = {
+  name:"wujf",
+  foo:foo
+}
+var bar = obj.foo;
+bar()
+```
+
+#### 规则三：显示绑定
+
+隐式绑定有一个前提条件：  
+
+- 必须在调用的对象内部有一个对函数的引用（比如一个属性）；  
+- 如果没有这样的引用，在进行调用时，会报找不到该函数的错误；  
+- 正是通过这个引用，间接的将this绑定到了这个对象上；  
+
+如果我们不希望在 对象内部 包含这个函数的引用，同时又希望在这个对象上进行强制调用，该怎么做呢？  
+
+- JavaScript所有的函数都可以使用call和apply方法（这个和Prototype有关）。  
+- 这两个函数的第一个参数都要求是一个对象，这个对象的作用是什么呢？就是给this准备的。  
+- 在调用这个函数时，会将this绑定到这个传入的对象上。  
+
+**因为上面的过程，我们明确的绑定了this指向的对象，所以称之为 显示绑定。**  
+
+#### call、apply、bind  
+
+- 通过call或者apply绑定this对象  
+  - 显示绑定后，this就会明确的指向绑定的对象  
+
+```js
+function foo() {
+  console.log(this);
+}
+
+var obj = {
+  name:"wujf"
+}
+
+foo.call(obj) // obj对象
+foo.call("123") // String对象 存放时字符串'123'
+foo.call(window) // window
+foo.call(undefined) // window
+foo.call(null) // window
+```
+
+- 如果我们希望一个函数总是显示的绑定到一个对象上，可以怎么做呢？  
+
+```js
+function foo() {
+  console.log(this);
+}
+
+var obj = {
+  name:"wujf",
+  foo:foo
+}
+
+var bar = obj.foo.bind(obj)
+bar() // obj对象
+```
+
+#### 内置函数的绑定思考  
+
+- 有些时候，我们会调用一些JavaScript的内置函数，或者一些第三方库中的内置函数。  
+  - 这些内置函数会要求我们传入另外一个函数；  
+  - 我们自己并不会显示的调用这些函数，而且JavaScript内部或者第三方库内部会帮助我们执行；  
+  - 这些函数中的this又是如何绑定的呢？  
+- setTimeout、数组的forEach、div的点击  
+
+```js
+setTimeout(function() {
+  console.log(this);// window
+},1000) 
+
+setTimeout(()=> {
+  console.log(this);// window
+},1000) 
+
+var obj = {
+  name:"wujf"
+}
+const arr = new Array(4).fill("this绑定")
+
+arr.forEach(function(item){
+  console.log(item,this); // obj对象
+},obj)
+
+const box = document.querySelector(".box");
+box.onclick = function() {
+  console.log(this); // <div class="box">点击</div>
+  console.log(this === box); // true
+}
+```
+
+#### 规则四：new绑定
+
+- JavaScript中的函数可以当做一个类的构造函数来使用，也就是使用new关键字。  
+- 使用new关键字来调用函数是，会执行如下的操作：  
+  1. 创建一个全新的对象；  
+  2. 这个新对象会被执行prototype连接；  
+  3. 这个新对象会绑定到函数调用的this上（this的绑定在这个步骤完成）；  
+  4. 如果函数没有返回其他对象，表达式会返回这个新对象；  
+
+```js
+function Foo(name) {
+  console.log(this); //Foo {}
+  this.name = name
+}
+
+var foo = new Foo("wujf");
+console.log(foo); // Foo {name: 'wujf'}
+```
+
+#### 规则优先级  
+
+- 学习了四条规则，接下来开发中我们只需要去查找函数的调用应用了哪条规则即可，但是如果一个函数调用位置应用了多条规则，优先级谁更高呢？  
+
+1. 默认规则的优先级最低  
+   - 毫无疑问，默认规则的优先级是最低的，因为存在其他规则时，就会通过其他规则的方式来绑定this  
+2. 显示绑定优先级高于隐式绑定  
+
+```js
+var obj = {
+  name: "obj",
+  foo: function() {
+    console.log(this)
+  }
+}
+
+obj.foo() // obj
+
+// 1.call/apply的显示绑定高于隐式绑定
+obj.foo.apply('abc') // String {'abc'}
+obj.foo.call('abc') // String {'abc'}
+
+// 2.bind的优先级高于隐式绑定
+var bar = obj.foo.bind("cba") // String {'cba'}
+bar()
+```
+
+3. new绑定优先级高于隐式绑定  
+
+```js
+var obj = {
+  name: "obj",
+  foo: function() {
+    console.log(this) // foo {}
+  }
+}
+
+// new的优先级高于隐式绑定
+var f = new obj.foo()
+```
+
+4. new绑定优先级高于bind  
+
+```js
+// new的优先级高于bind
+function foo() {
+  console.log(this)
+}
+
+var bar = foo.bind("aaa")
+
+var obj = new bar()
+```
+
+- new绑定和call、apply是不允许同时使用的，所以不存在谁的优先级更高 
+- new绑定可以和bind一起使用，new绑定优先级更高  
+
+<u>new绑定 > 显示绑定(apply/call/bind) > 隐式绑定(obj.foo()) > 默认绑定(独立函数调用)</u>
+
+#### this规则之外 – 忽略显示绑定  
+
+- 我们讲到的规则已经足以应付平时的开发，但是总有一些语法，超出了我们的规则之外。  
+
+![](http://img.duoziwang.com/2021/04/07212212113246.jpg)
+
+- 如果在显示绑定中，我们传入一个null或者undefined，那么这个显示绑定会被忽略，使用默认规则：  
+
+```js
+function foo() {
+  console.log(this);
+}
+
+var obj = {
+  name:"wujf"
+}
+foo.call(window) // window
+foo.call(undefined) // window
+foo.call(null) // window
+var bar = foo.bind(null)
+bar(); // window
+```
+
+#### this规则之外 - 间接函数引用  
+
+- 另外一种情况，创建一个函数的 间接引用，这种情况使用默认绑定规则。  
+  - 赋值(obj2.foo = obj1.foo)的结果是foo函数；  
+  - foo函数被直接调用，那么是默认绑定；  
+
+```js
+function foo() {
+  console.log(this);
+}
+
+var obj = {
+  name:"wujf",
+  fn:foo
+}
+
+var obj2 = {
+  name:"wujf",
+}
+obj.fn(); // obj对象
+(obj.foo = obj.fn)(); // window
+```
+
+#### 箭头函数   
+
+- 箭头函数是ES6之后增加的一种编写函数的方法，并且它比函数表达式要更加简洁：  
+  - 箭头函数不会绑定this、arguments属性；  
+  - 箭头函数不能作为构造函数来使用（不能和new一起来使用，会抛出错误）；  
+- 箭头函数不使用this的四种标准规则（也就是不绑定this），而是根据外层作用域来决定this。  
+
+- 我们来看一个模拟网络请求的案例：  
+  - 这里我使用setTimeout来模拟网络请求，请求到数据后如何可以存放到data中呢？  
+  - 我们需要拿到obj对象，设置data；  
+  - 但是直接拿到的this是window，我们需要在外层定义：var _this = this  
+  - 在setTimeout的回调函数中使用_this就代表了obj对象  
+
+```js
+var obj = {
+  data:[],
+  getDataList() {
+    var _this = this;
+    setTimeout(function() {
+      _this.data.push(new Array(10).fill("数据"))
+      console.log(obj.data);
+    },1000)
+  }
+}
+obj.getDataList()
+```
+
+#### ES6箭头函数this  
+
+- 之前的代码在ES6之前是我们最常用的方式，从ES6开始，我们会使用箭头函数：  
+  - 为什么在setTimeout的回调函数中可以直接使用this呢？  
+  - 因为箭头函数并不绑定this对象，那么this引用就会从上层作用于中找到对应的this  
+
+```js
+var obj = {
+  data:[],
+  getDataList:()=> {
+    setTimeout(()=> {
+      console.log(this); // window
+    },1000)
+  }
+}
+obj.getDataList()
+```
+
+```js
+var obj = {
+  data:[],
+  getDataList() {
+    setTimeout(()=> {
+      console.log(this); // obj
+    },1000)
+  }
+}
+obj.getDataList()
+```
+
+#### 实现apply、call、bind  
+
+[看这篇文章](https://juejin.cn/post/6960599454986534926#heading-9)
+
+#### 认识arguments  
+
+- arguments 是一个 对应于 传递给函数的参数 的 类数组(array-like)对象。  
+
+```js
+function foo (x,y,z) {
+  console.log(arguments); //Arguments(3) [1, 2, 3, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+}
+
+foo(1,2,3) 
+```
+
+- array-like意味着它不是一个数组类型，而是一个对象类型：  
+  - 但是它却拥有数组的一些特性，比如说length，比如可以通过index索引来访问；  
+  - 但是它却没有数组的一些方法，比如forEach、map等 ;
+
+```js
+function foo (x,y,z) {
+  console.log(arguments[0]); // 1
+  console.log(arguments.length); // 3
+}
+
+foo(1,2,3) 
+```
+
+#### arguments转成array  
+
+```js
+function foo (x,y,z) {
+  // console.log(arguments); //Arguments(3) [1, 2, 3, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+
+  // auguments 转数组
+
+    console.log(arguments.length);
+
+    var arr = [];
+    for (let i = 0; i < arguments.length; i++) {
+      arr.push(arguments[i])
+    }
+    console.log(arr); //[ 1, 2, 3 ]
+
+    var arr1 = Array.prototype.slice.call(arguments) //[ 1, 2, 3 ]
+    var arr2 = [].slice.call(arguments) //[ 1, 2, 3 ]
+    var arr3 = Array.from(arguments) //[ 1, 2, 3 ]
+    var arr4 = [...arguments] //[ 1, 2, 3 ]
+    console.log(arr4);
+}
+
+foo(1,2,3) 
+```
+
+#### 箭头函数不绑定arguments  
+
+```js
+var foo = (x,y,z)=> {
+  console.log(arguments); // 上层作用域是window
+}
+
+foo(1,2,3)
+
+function bar(x,y,z) {
+  return (n,m) => {
+    console.log(arguments); //上层作用域是bar [Arguments] { '0': 1, '1': 2, '2': 3 }
+  }
+}
+var fn = bar(1,2,3)
+fn(4,5)
+```
+
+#### JavaScript柯里化  
+
+- 柯里化也是属于函数式编程里面一个非常重要的概念  
+
+- 我们先来看一下维基百科的解释：  
+
+  - 在计算机科学中，柯里化（英语：Currying），又译为卡瑞化或加里化；  
+  - 是把接收多个参数的函数，变成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数，而且返回结果的新函数的技术；  
+  - 柯里化声称 “如果你固定某些参数，你将得到接受余下参数的一个函数”；  
+
+  **简单总结**：只传递给函数一部分参数来调用它，让它返回一个函数去处理剩余的参数，这个过程就称之为柯里化；  
+
+#### 柯里化的结构  
+
+```js
+function foo(x) {
+  return function(y) {
+    return function(z) {
+      console.log(x+ y + z);
+    }
+  }
+}
+
+foo(1)(2)(3)
+
+var bar = x => y => z => x + y + z
+console.log(bar(1)(2)(3));
+```
+
+那么为什么需要有柯里化呢？  
+
+- 在函数式编程中，我们其实往往希望一个函数处理的问题尽可能的单一，而不是将一大堆的处理过程交给一个函数来处理；  
+- 那么我们是否就可以将每次传入的参数在单一的函数中进行处理，处理完后在下一个函数中再使用处理后的结果;
+- 比如上面的案例我们进行一个修改：传入的函数需要分别被进行如下处理  
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fa99160862d94c16870d4a7b92eb6cbe~tplv-k3u1fbpfcp-watermark.image?)
+
+逻辑复用
+
+```js
+function log(date, type, message) {
+  console.log(`[${date.getHours()}:${date.getMinutes()}][${type}]: [${message}]`)
+}
+
+// log(new Date(), "DEBUG", "查找到轮播图的bug")
+// log(new Date(), "DEBUG", "查询菜单的bug")
+// log(new Date(), "DEBUG", "查询数据的bug")
+
+// 柯里化的优化
+var log = date => type => message => {
+  console.log(`[${date.getHours()}:${date.getMinutes()}][${type}]: [${message}]`)
+}
+
+// 如果我现在打印的都是当前时间
+var nowLog = log(new Date())
+nowLog("DEBUG")("查找到轮播图的bug")
+nowLog("FETURE")("新增了添加用户的功能")
+
+var nowAndDebugLog = log(new Date())("DEBUG")
+nowAndDebugLog("查找到轮播图的bug")
+nowAndDebugLog("查找到轮播图的bug")
+nowAndDebugLog("查找到轮播图的bug")
+nowAndDebugLog("查找到轮播图的bug")
+
+
+var nowAndFetureLog = log(new Date())("FETURE")
+nowAndFetureLog("添加新功能~")
+```
+
+#### 柯里化函数的实现
+
+```js
+function hyCurrying(fn) {
+  function curried(...args) {
+    // 判断当前已经接收的参数的个数, 可以参数本身需要接受的参数是否已经一致了
+    // 1.当已经传入的参数 大于等于 需要的参数时, 就执行函数
+    if (args.length >= fn.length) {
+      // fn(...args)
+      // fn.call(this, ...args)
+      return fn.apply(this, args)
+    } else {
+      // 没有达到个数时, 需要返回一个新的函数, 继续来接收的参数
+      function curried2(...args2) {
+        // 接收到参数后, 需要递归调用curried来检查函数的个数是否达到
+        return curried.apply(this, [...args2,...args2])
+      }
+      return curried2
+    }
+  }
+  return curried
+}
+```
+
+
+
+#### this指向面试题
+
+```js
+var name = "window";
+
+var person = {
+  name: "person",
+  sayName: function () {
+    console.log(this.name);
+  }
+};
+
+function sayName() {
+  var sss = person.sayName;
+  sss(); // window
+  person.sayName(); //  person
+  (person.sayName)();  //  person
+  (b = person.sayName)(); // window
+}
+
+sayName();
+```
+
+```js
+var name = 'window'
+var person1 = {
+  name: 'person1',
+  foo1: function () {
+    console.log(this.name)
+  },
+  foo2: () => console.log(this.name),
+  foo3: function () {
+    return function () {
+      console.log(this.name)
+    }
+  },
+  foo4: function () {
+    return () => {
+      console.log(this.name)
+    }
+  }
+}
+
+var person2 = { name: 'person2' }
+person1.foo1(); // person1(隐式绑定)
+person1.foo1.call(person2); // person2(显示绑定优先级大于隐式绑定)
+
+person1.foo2(); // window(不绑定作用域,上层作用域是全局)
+person1.foo2.call(person2); // window
+
+person1.foo3()(); // window(独立函数调用)
+person1.foo3.call(person2)(); // window(独立函数调用)
+person1.foo3().call(person2); // person2(最终调用返回函数式, 使用的是显示绑定)
+
+person1.foo4()(); // person1(箭头函数不绑定this, 上层作用域this是person1) {}不是作用域，fn才有
+person1.foo4.call(person2)(); // person2(上层作用域被显示的绑定了一个person2)
+person1.foo4().call(person2); // person1(上层找到person1)
+```
+
+```js
+var name = 'window'
+
+function Person (name) {
+  this.name = name
+  this.foo1 = function () {
+    console.log(this.name)
+  },
+  this.foo2 = () => console.log(this.name),
+  this.foo3 = function () {
+    return function () {
+      console.log(this.name)
+    }
+  },
+  this.foo4 = function () {
+    return () => {
+      console.log(this.name)
+    }
+  }
+}
+
+var person1 = new Person('person1')
+var person2 = new Person('person2')
+
+person1.foo1() // person1
+person1.foo1.call(person2) // person2(显示高于隐式绑定)
+
+person1.foo2() // person1 (上层作用域中的this是person1)
+person1.foo2.call(person2) // person1 (上层作用域中的this是person1)
+
+person1.foo3()() // window(独立函数调用)
+person1.foo3.call(person2)() // window
+person1.foo3().call(person2) // person2
+
+person1.foo4()() // person1
+person1.foo4.call(person2)() // person2
+person1.foo4().call(person2) // person1
+```
+
+```js
+var name = 'window'
+
+function Person (name) {
+  this.name = name
+  this.obj = {
+    name: 'obj',
+    foo1: function () {
+      return function () {
+        console.log(this.name)
+      }
+    },
+    foo2: function () {
+      return () => {
+        console.log(this.name)
+      }
+    }
+  }
+}
+
+var person1 = new Person('person1')
+var person2 = new Person('person2')
+
+person1.obj.foo1()() // window
+person1.obj.foo1.call(person2)() // window
+person1.obj.foo1().call(person2) // person2
+
+person1.obj.foo2()() // obj
+person1.obj.foo2.call(person2)() // person2
+person1.obj.foo2().call(person2) // obj
+```
 
 ### 四、JS面向对象
+
+- 对象是JavaScript中一个非常重要的概念，这是因为对象可以将多个相关联的数据封装到一起，更好的描述一个事物：  
+
+  1. 比如我们可以描述一辆车：Car，具有颜色（color）、速度（speed）、品牌（brand）、价格（price），行驶（travel）等等；  
+
+  2. 比如我们可以描述一个人：Person，具有姓名（name）、年龄（age）、身高（height），吃东西（eat）、跑步（run）等等；  
+
+- 用对象来描述事物，更有利于我们将现实的事物，抽离成代码中某个数据结构：  
+
+  1. 所以有一些编程语言就是纯面向对象的编程语言，比Java；  
+  2. 你在实现任何现实抽象时都需要先创建一个类，根据类再去创建对象；  
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5c0c49d3c14949508eaf8ddf471d82c2~tplv-k3u1fbpfcp-watermark.image?)
+
+#### JavaScript的面向对象  
+
+- JavaScript其实支持多种编程范式的，包括函数式编程和面向对象编程：  
+  - JavaScript中的对象被设计成一组属性的无序集合，像是一个哈希表，有key和value组成；  
+  - key是一个标识符名称，value可以是任意类型，也可以是其他对象或者函数类型；  
+  - 如果值是一个函数，那么我们可以称之为是对象的方法；  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a7564c2f831049e281311f278788e91a~tplv-k3u1fbpfcp-watermark.image?)
+
+#### 对属性操作的控制  
+
+##### 1、Object.defineProperty()
+
+[语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#语法)
+
+```
+Object.defineProperty(obj, prop, descriptor)
+```
+
+[参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#参数)
+
+- `obj`
+
+  要定义属性的对象。
+
+- `prop`
+
+  要定义或修改的属性的名称或 [`Symbol`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol) 。
+
+- `descriptor`
+
+  要定义或修改的属性描述符。
+
+[返回值](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#返回值)
+
+被传递给函数的对象。
+
+- `configurable`
+
+  当且仅当该属性的 `configurable` 键值为 `true` 时，该属性的描述符才能够被改变，同时该属性也能从对应的对象上被删除。 **默认为** **`false`**。
+
+- `enumerable`
+
+  当且仅当该属性的 `enumerable` 键值为 `true` 时，该属性才会出现在对象的枚举属性中。 **默认为 `false`**。
+
+数据描述符还具有以下可选键值：
+
+- `value`
+
+  该属性对应的值。可以是任何有效的 JavaScript 值（数值，对象，函数等）。 **默认为 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)**。
+
+- `writable`
+
+  当且仅当该属性的 `writable` 键值为 `true` 时，属性的值，也就是上面的 `value`，才能被[`赋值运算符` (en-US)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators#assignment_operators)改变。 **默认为 `false`。**
+
+存取描述符还具有以下可选键值：
+
+- `get`
+
+  属性的 getter 函数，如果没有 getter，则为 `undefined`。当访问该属性时，会调用此函数。执行时不传入任何参数，但是会传入 `this` 对象（由于继承关系，这里的`this`并不一定是定义该属性的对象）。该函数的返回值会被用作属性的值。 **默认为 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)**。
+
+- `set`
+
+  属性的 setter 函数，如果没有 setter，则为 `undefined`。当属性值被修改时，会调用此函数。该方法接受一个参数（也就是被赋予的新值），会传入赋值时的 `this` 对象。 **默认为 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)**。
+
+描述符默认值汇总
+
+- 拥有布尔值的键 `configurable`、`enumerable` 和 `writable` 的默认值都是 `false`。
+- 属性值和函数的键 `value`、`get` 和 `set` 字段的默认值为 `undefined`。
+
+描述符可拥有的键值
+
+- `configurable` `enumerable` `value` `writable` `get` `set`数据描述符可以可以可以可以不可以不可以存取描述符可以可以不可以不可以可以可以
+
+如果一个描述符不具有 `value`、`writable`、`get` 和 `set` 中的任意一个键，那么它将被认为是一个数据描述符。如果一个描述符同时拥有 `value` 或 `writable` 和 `get` 或 `set` 键，则会产生一个异常。
+
+##### 2、Object.getOwnPropertyDescriptors()
+
+[语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors#语法)
+
+```
+Object.getOwnPropertyDescriptors(obj)
+```
+
+[参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors#参数)
+
+- `obj`
+
+  任意对象
+
+[返回值](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors#返回值)
+
+所指定对象的所有自身属性的描述符，如果没有任何自身属性，则返回空对象。
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/12042edfac874e94b28eb6a782ea8ca8~tplv-k3u1fbpfcp-watermark.image?)
+
+#### 工厂模式  
+
+- 工厂模式其实是一种常见的设计模式；  
+- 通常我们会有一个工厂方法，通过该工厂方法我们可以产生想要的对象；  
+
+```js
+function createPerson(name,age,job) {
+  var o = new Object();
+  o.name = name
+  o.age = age
+  o.job = job
+  o.eating = function() {
+    console.log(`${this.name}再吃东西`);
+  }
+
+  o.running = function() {
+    console.log(`${this.name}再跑步`);
+  }
+  return o;
+}
+var p1 = createPerson("张三","20","工人")
+var p2 = createPerson("李四","22","工人")
+var p3 = createPerson("王五","23","工人")
+
+p1.eating()
+```
+
+#### 构造函数  
+
+- 工厂方法创建对象有一个比较大的问题：我们在打印对象时，对象的类型都是Object类型  
+
+```js
+var p1 = createPerson("张三","20","工人")
+var p2 = createPerson("李四","22","工人")
+var p3 = createPerson("王五","23","工人")
+
+console.log(p1); 
+// {
+//   name: '张三',
+//   age: '20',
+//   job: '工人',
+//   eating: [Function (anonymous)],
+// }
+```
+
+但是从某些角度来说，这些对象应该有一个他们共同的类型；  
+
+- 我们先理解什么是构造函数？  
+  - 构造函数也称之为构造器（constructor），通常是我们在创建对象时会调用的函数；  
+  - 在其他面向的编程语言里面，构造函数是存在于类中的一个方法，称之为构造方法；  
+  - 但是JavaScript中的构造函数有点不太一样；  
+
+- JavaScript中的构造函数是怎么样的？  
+  - 构造函数也是一个普通的函数，从表现形式来说，和千千万万个普通的函数没有任何区别；  
+  - 那么如果这么一个普通的函数被使用new操作符来调用了，那么这个函数就称之为是一个构造函数；  
+- 那么被new调用有什么特殊的呢？  
+
+#### new操作符调用的作用  
+
+- 如果一个函数被使用new操作符调用了，那么它会执行如下操作：  
+  1. 在内存中创建一个新的对象（空对象）；  
+  2. 这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性；  
+  3. 构造函数内部的this，会指向创建出来的新对象；  
+  4. 执行函数的内部代码（函数体代码）；  
+  5. 如果构造函数没有返回非空对象，则返回创建出来的新对象；  
+
+```js
+function Person() {}
+var p = new Person();
+console.log(p); // Person {}
+```
+
+- 我们来通过构造函数实现一下：  
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3a93de99772545949e8ea7d1a0435d45~tplv-k3u1fbpfcp-watermark.image?)
+
+- 这个构造函数可以确保我们的对象是有Person的类型的（实际是`constructor`的属性，这个我们后续再探讨）；  
+
+```js
+let p = new Person("wujf", 20, 1.88)
+console.log(p);
+// Person {
+//   name: 'wujf',
+//   age: 20,
+//   height: 1.88,
+//   eating: [Function (anonymous)],
+//   running: [Function (anonymous)]
+// }
+p.eating();
+p.running();
+```
+
+- 但是构造函数就没有缺点了吗？  
+  - 构造函数也是有缺点的，它在于我们需要为每个对象的函数去创建一个函数对象实例；  
+
+#### 认识对象的原型  
+
+- `JavaScript`当中每个对象都有一个特殊的内置属性 `[[prototype]]`，这个特殊的对象可以指向另外一个对象。  
+- 那么这个对象有什么用呢？  
+  - 当我们通过引用对象的属性key来获取一个`value`时，它会触发` [[Get]]`的操作；  
+  - 这个操作会首先检查该属性是否有对应的属性，如果有的话就使用它；  
+  - 如果对象中没有改属性，那么会访问对象`[[prototype]]`内置属性指向的对象上的属性；  
+- 那么如果通过字面量直接创建一个对象，这个对象也会有这样的属性吗？如果有，应该如何获取这个属性呢？  
+  - 答案是有的，只要是对象都会有这样的一个内置属性  
+- 获取的方式有两种：  
+  - 方式一：通过对象的 `__proto__ `属性可以获取到（但是这个是早期浏览器自己添加的，存在一定的兼容性问题）；  
+  - 方式二：通过 `Object.getPrototypeOf` 方法可以获取到；  
+
+```js
+// 我们每个对象中都有一个 [[prototype]], 这个属性可以称之为对象的原型(隐式原型)
+
+var obj = { name: "why" } // [[prototype]]
+var info = {} // [[prototype]]
+
+// 1.解释原型的概念和看一下原型
+// 早期的ECMA是没有规范如何去查看 [[prototype]]
+
+// 给对象中提供了一个属性, 可以让我们查看一下这个原型对象(浏览器提供)
+// __proto__
+console.log(obj.__proto__) // {}
+console.log(info.__proto__) // {}
+
+var obj = {name: "why", __proto__: {} }
+
+// ES5之后提供的Object.getPrototypeOf
+console.log(Object.getPrototypeOf(obj))
+
+
+// 2.原型有什么用呢?
+// 当我们从一个对象中获取某一个属性时, 它会触发 [[get]] 操作
+// 1. 在当前对象中去查找对应的属性, 如果找到就直接使用
+// 2. 如果没有找到, 那么会沿着它的原型去查找 [[prototype]]
+// obj.age = 18
+obj.__proto__.age = 18
+
+console.log(obj.age) // 18
+```
+
+#### 函数的原型 prototype  
+
+- 那么我们知道上面的东西对于我们的构造函数创建对象来说有什么用呢？  
+  - 它的意义是非常重大的，接下来我们继续来探讨；  
+- 这里我们又要引入一个新的概念：所有的函数都有一个`prototype`的属性:
+
+```js
+function Person() {}
+// 所有函数都有一个属性，名字是prototype
+console.log(Person.prototype); // {constructor: ƒ}
+```
+
+- 我们前面讲过`new`关键字的步骤如下：  
+  - 在内存中创建一个新的对象（空对象）；  
+  - 这个对象内部的`[[prototype]]`属性会被赋值为该构造函数的`prototype`属性；  
+- 那么也就意味着我们通过`Person`构造函数创建出来的所有对象的`[[prototype]]`属性都指向`Person.prototype`：  
+
+```js
+function Person() {}
+var person = new Person();
+
+// 上面操作相当于会进行下面操作
+var p = {}
+console.log(p.__proto__);
+```
+
+```js
+function Person() {}
+var person1 = new Person();
+var person2 = new Person();
+console.log(person1.__proto__=== Person.prototype); // true
+console.log(person2.__proto__=== Person.prototype); // true
+console.log(person2.__proto__=== person1.__proto__); // true
+```
+
+- 创建对象的内存表现 
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b5ca9d3d85c049018a4dc92b4d59d199~tplv-k3u1fbpfcp-watermark.image?)
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3efec52af394fde831ae1fd5302699f~tplv-k3u1fbpfcp-watermark.image?)
+
+- 赋值为新的对象
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b7d68b6ff0f4a11a533bf02f8448a92~tplv-k3u1fbpfcp-watermark.image?)
+
+- prototype添加属性  
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/42bae8bab18d491b914beb0117bc4b85~tplv-k3u1fbpfcp-watermark.image?)
+
+#### constructor属性
 
 ### 五、ES6~ES12常用知识点
 

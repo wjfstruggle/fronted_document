@@ -8,13 +8,13 @@ var info = {} // [[prototype]]
 
 // 给对象中提供了一个属性, 可以让我们查看一下这个原型对象(浏览器提供)
 // __proto__
-// console.log(obj.__proto__) // {}
-// console.log(info.__proto__) // {}
+console.log(obj.__proto__) // {}
+console.log(info.__proto__) // {}
 
-// var obj = {name: "why", __proto__: {} }
+var obj = {name: "why", __proto__: {} }
 
-// // ES5之后提供的Object.getPrototypeOf
-// console.log(Object.getPrototypeOf(obj))
+// ES5之后提供的Object.getPrototypeOf
+console.log(Object.getPrototypeOf(obj))
 
 
 // 2.原型有什么用呢?
@@ -24,4 +24,4 @@ var info = {} // [[prototype]]
 // obj.age = 18
 obj.__proto__.age = 18
 
-console.log(obj.age)
+console.log(obj.age) // 18
