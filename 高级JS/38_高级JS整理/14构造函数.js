@@ -44,10 +44,22 @@ var person2 = new Person();
 var p = {}
 // console.log(p.__proto__);
 
-console.log(person1.__proto__=== Person.prototype); // true
-console.log(person2.__proto__=== Person.prototype); // true
-console.log(person2.__proto__=== person1.__proto__); // true
-console.log(Person.prototype.constructor); // [Function: Person]
-console.log(person2.__proto__.constructor); // [Function: Person]
-console.log(person2.__proto__.constructor.name); // Person
+// console.log(person1.__proto__=== Person.prototype); // true
+// console.log(person2.__proto__=== Person.prototype); // true
+// console.log(person2.__proto__=== person1.__proto__); // true
+// console.log(Person.prototype.constructor); // [Function: Person]
+// console.log(person2.__proto__.constructor); // [Function: Person]
+// console.log(person2.__proto__.constructor.name); // Person
+// console.log(Person.prototype.constructor === Person); // true
 
+// console.log(Person.prototype);
+// console.log(Person.prototype.constructor);
+
+Person.prototype.name = "wujf"
+Person.prototype.age = 20
+Person.prototype.eating = function() {
+  console.log(`${person1.name}`);
+}
+person1.eating()
+
+console.log(Person.prototype.constructor);

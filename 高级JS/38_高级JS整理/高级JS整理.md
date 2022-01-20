@@ -1348,6 +1348,69 @@ console.log(person2.__proto__=== person1.__proto__); // true
 
 #### constructor属性
 
+- 事实上原型对象上面是有一个属性的：`constructor  `
+- 默认情况下原型上都会添加一个属性叫做`constructor`，这个`constructor`指向当前的函数对象；  
+
+```js
+function Person() {}
+var person1 = new Person();
+var person2 = new Person();
+console.log(Person.prototype.constructor); // [Function: Person]
+console.log(person2.__proto__.constructor); // [Function: Person]
+console.log(person2.__proto__.constructor.name); // Person
+console.log(Person.prototype.constructor === Person); // true
+```
+
+- 重写原型对象  
+
+如果我们需要在原型上添加过多的属性，通常我们会重新整个原型对象：  
+
+```js
+function Person() {}
+var person1 = new Person();
+var person2 = new Person();
+Person.prototype.name = "wujf"
+Person.prototype.age = 20
+Person.prototype.eating = function() {
+  console.log(`${this.name}`);
+}
+person1.eating()
+```
+
+前面我们说过, 每创建一个函数, 就会同时创建它的prototype对象, 这个对象也会自动获取constructor属性；  而我们这里相当于给prototype重新赋值了一个对象, 那么这个新对象的constructor属性, 会指向Object构造函数, 而不是Person构造函数了  
+
+- 创建对象 – 构造函数和原型组合  
+  - 我们在上一个构造函数的方式创建对象时，有一个弊端：会创建出重复的函数，比如running、eating这些函数。
+  - 那么有没有办法让所有的对象去共享这些函数呢?  
+  - 可以，将这些函数放到Person.prototype的对象上即可；  
+
+```js
+function Person(name, age, height, address) {
+  this.name = name
+  this.age = age
+  this.height = height
+  this.address = address
+}
+
+Person.prototype.eating = function() {
+  console.log(this.name + "在吃东西~")
+}
+
+Person.prototype.running = function() {
+  console.log(this.name + "在跑步~")
+}
+
+var p1 = new Person("wujf", 18, 1.88, "广州市")
+var p2 = new Person("张三", 20, 1.98, "芜湖市")
+
+p1.eating()
+p2.eating()
+```
+
+#### JavaScript中的类和对象  
+
+
+
 ### 五、ES6~ES12常用知识点
 
 ### 六、模块化
