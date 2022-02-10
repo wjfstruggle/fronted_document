@@ -1438,7 +1438,37 @@ console.log(obj.__proto__.__proto__.__proto__.__proto__); // [Object: null proto
 - [Object: null prototype] {} 原型有什么特殊吗？  
   - 特殊一：该对象有原型属性，但是它的原型属性已经指向的是null，也就是已经是顶层原型了；  
   - 特殊二：该对象上有很多默认的属性和方法；  
-- 
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e16653b8b88b47aabeb1a6846ddbb5af~tplv-k3u1fbpfcp-watermark.image?)
+
+**原型链关系的内存图**
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1e9c3528741143f48981504b648deeac~tplv-k3u1fbpfcp-watermark.image?)
+
+**Object是所有类的父类**
+
+- 从我们上面的Object原型我们可以得出一个结论：原型链最顶层的原型对象就是Object的原型对象
+
+```js
+function Person(name,age) {
+  this.name = name;
+  this.age = age;
+}
+
+Person.prototype.running = function() {
+  console.log(`${this.name}: 在running`);
+}
+
+var p = new Person("why",18)
+p.running()
+console.log(p);
+console.log(p.toString());
+console.log(p.valueOf());
+```
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5bd718c25bd54d08b5c37a05d71aebf7~tplv-k3u1fbpfcp-watermark.image?)
+
+
 
 ### 五、ES6~ES12常用知识点
 
