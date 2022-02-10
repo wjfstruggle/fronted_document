@@ -7,6 +7,10 @@
   <title>Document</title>
 </head>
 <body>
+  <!-- 圣杯布局和双飞翼布局的技术总结：
+      使用 float  布局。
+      两侧使用 margin 负值，以便和中间内容横向重叠。
+      防止中间内容被两侧覆盖，圣杯布局用 padding ，双飞翼布局用 margin 。 -->
   <div id="container" class="clearfix">
     <p class="center">我是中间</p>
     <p class="left">我是左边</p>
@@ -14,20 +18,32 @@
   </div>
   <style>
     #container{
-      height: 200px;
+      padding: 0 200px;
+      overflow: auto;
+    }
+    #container p {
+      float: left;
     }
     .left {
-      float: left;
+      position: relative;
+      left: -200px;
       width: 200px;
-      height: 100%;
+      margin-left: -100%;
+      background-color: burlywood;
     }
     .center{
-      margin-left: 200px;
+      width: 100%;
+      background-color: chartreuse;
     }
-    .left {
-      float: right;
+    .right {
       width: 200px;
-      height: 100%
+      margin-right: -200px;
+      background-color: brown;
+    }
+    .clearfix:after {
+      content: "";
+      display: table;
+      clear: both;
     }
   </style>
 </body>
