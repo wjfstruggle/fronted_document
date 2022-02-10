@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <style>
+    /* 方式一 */
+    /* .box{
+      height: 100px;
+    }
+    .left {
+      width: 200px;
+      height: 100%;
+      background-color:rgb(95, 95, 95);
+      float: left;
+    }
+    .right {
+      background-color: aquamarine;
+      height: 100%;
+      margin-left: 200px;
+    } */
+    /* 方式二 */
+    /* .box{
+      height: 100px;
+    }
+    .left {
+      width: 200px;
+      height: 100%;
+      background-color:rgb(95, 95, 95);
+      float: left;
+    }
+    .right {
+      background-color: aquamarine;
+      height: 100%;
+      overflow: auto;
+    } */
+    /* 方式三 利用 flex 布局，左边元素固定宽度，右边的元素设置 flex: 1 */
+    /* .box{
+      display: flex;
+      height: 100px;
+    }
+    .left {
+      width: 200px;
+      height: 100%;
+      background-color:rgb(95, 95, 95);
+    }
+    .right {
+      flex: 1;
+      background-color: aquamarine;
+      height: 100%;
+    } */
+    /* 方式四 绝对定位*/
+    .box{
+      position: relative;
+      height: 100px;
+    }
+    .left {
+      position: absolute;
+      width: 200px;
+      height: 100%;
+      background-color:rgb(95, 95, 95);
+    }
+    .right {
+      background-color: aquamarine;
+      height: 100%;
+      margin-left: 200px;
+    }
+  </style>
+  <div class="box">
+    <div class="left"></div>
+    <div class="right"></div>
+  </div>
+</body>
+</html>
