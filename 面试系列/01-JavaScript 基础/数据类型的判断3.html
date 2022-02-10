@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let obj = {
+      a:1,
+      running:function() {
+        console.log(this.a);
+      }
+    }
+    function bar() {
+      console.log(this);
+    }
+    bar.call(obj)
+    bar.call("")
+    // 如何判断变量是否为数组
+    // Array.isArray()用来判断某个变量是否是一个数组对象
+    console.log(Array.isArray([]));
+    console.log([] instanceof Array);
+    console.log(Object.prototype.toString.call([]));
+    let arr = []
+    console.log(arr.__proto__ == Array.prototype);
+  </script>
+</body>
+</html>

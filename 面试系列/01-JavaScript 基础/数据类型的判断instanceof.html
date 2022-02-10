@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // instanceof：能判断对象类型，不能判断基本数据类型，其内部运行机制是判断在其原型链中能否找到该类型的原型。比如考虑以下代码：
+    console.log({} instanceof Object);
+    console.log([] instanceof Array);
+    class Person {}
+    class Student extends Person {}
+    let stu = new Student();
+    console.log(stu instanceof Person);
+    console.log(stu instanceof Student);
+  </script>
+</body>
+</html>

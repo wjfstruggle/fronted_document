@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 简单的深拷贝
+    // function deepClone(target) {
+    //   if(typeof target === "object") {
+    //     let targetClone = Array.isArray(target) ? [] : {};
+    //     for(var key in target) {
+    //       targetClone[key] = deepClone(target[key])
+    //     }
+    //     return targetClone
+    //   }else {
+    //     return target
+    //   }
+    // }
+    const target = {
+      field1: 1,
+      field2: undefined,
+      field3: {
+          child: 'child'
+      },
+      field4: [2, 4, 8]
+    };
+    target.target = target
+    // const result = deepClone(target) // 死循环
+    // console.log(result);
+
+    // 优化后的深拷贝
+    // 检查map中有无克隆过的对象
+    // 有 - 直接返回
+    // 没有 - 将当前对象作为key，克隆对象作为value进行存储
+    // 继续克隆
+    function deepClone1(target, map = new Map()) {
+      if (typeof target === 'object') {
+        let cloneTarget = Array.isArray(target) ? [] : {};
+        if (map.get(target)) {
+          return map.get(target);
+        }
+        map.set(target, cloneTarget);
+        for (const key in target) {
+          cloneTarget[key] = deepClone1(target[key], map);
+        }
+        return cloneTarget;
+        } else {
+          return target;
+        }
+      };
+
+    const result = deepClone1(target) // 死循环
+    console.log(result);
+  </script>
+</body>
+</html>
