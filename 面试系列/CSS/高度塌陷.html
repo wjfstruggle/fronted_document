@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="father">
+    <div class="content"></div>
+    <div class="sidebar"></div>
+    <!-- <div class="clearfix"></div> -->
+  </div>
+  <div class="main"></div>
+</body>
+<style>
+  .father{
+    background-color: aqua;
+    /* overflow: hidden; */
+    /* float: left; */
+    display: table;
+  }
+  /* .father::after {
+    content: "";
+    clear: both;
+    display: table;
+    height: 0;
+  } */
+  .content{
+    height: 200px;
+    width: 200px;
+    background-color: blueviolet;
+    float: left;
+  }
+  .sidebar{
+    height: 200px;
+    width: 200px;
+    background-color: rgb(69, 65, 73);
+    float: left;
+  }
+  /* .clearfix{
+    clear: both;
+  } */
+  /* .main{
+    height: 200px;
+    width: 200px;
+    background-color: black;
+    clear:both
+  } */
+</style>
+</html>
