@@ -234,3 +234,229 @@
 
 > 5种解决方法
 
+- 1、设置父元素overflow:hidden  ，原理: 父元素变成BFC渲染区域，就必须包裹内层子元素的marg  
+- 缺点: 万一有的子元素，即使溢出父元素，也希望显示呢？就会发生冲突。  
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/faa382c7ce1b44398d6c3766fe4e49a0~tplv-k3u1fbpfcp-watermark.image?)
+
+
+
+- 2. 为父元素添加上边框，颜色设置为透明（transparent）  
+
+- 原理: 这里不是bfc。而是因为边框本身可以阻隔margin溢出。  
+- 缺点: 边框会增大父元素的实际大小，导致布局错乱  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/696e8486081e4f9199a76940b60170e9~tplv-k3u1fbpfcp-watermark.image?)
+
+- 3.用父元素的padding-top代替第一个子元素的margin-top  
+- 原理: 这里也不是bfc。而是因为padding本身可以阻隔margin溢出。  
+- 缺点: 对父元素高度有影响。  
+- 解决: 可以设置父元素box-sizing:border-box。  
+
+![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a96647bd9df549f68f23d8cc5bc768c2~tplv-k3u1fbpfcp-watermark.image?)
+
+- 4. 在父元素内第一个子元素之前添加一个空的`<table></table>  `
+- 原理: table的display属性默认相当于table，所以形成小的bfc渲染区域。其他元素的margin不能进入table范围内。就阻隔了margin向上溢出。  
+- 优点: 空table元素没有大小，不占用父元素控件。  
+- 缺点: 增加一个看不见的空元素，干扰查找元素  
+
+![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2e990a37195e4721b222b388d982ef68~tplv-k3u1fbpfcp-watermark.image?)
+
+- 5. 最好的解决: 父元素`::before{ content:""; display:table; }  `
+- 优点:既不隐藏内容，又不添加新元素，又不影响高度。  
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c52123b122a748b3a2f0fa3ec5bc98bf~tplv-k3u1fbpfcp-watermark.image?)
+
+###### 3、左定宽，右自适应布局
+
+> 希望效果
+
+![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/93d07e30519848ff87b009e800a0a155~tplv-k3u1fbpfcp-watermark.image?)
+
+- 第一步: 左边定宽元素左浮动: .left{ float:left; width:固定宽 }  
+- 第二步: 右边元素右浮动： .right{ float:right; …}  
+- 问题: 右边元素虽然在右边了，但是宽度无法自适应。  
+- 右边元素不用右浮动，而是.right{overflow:hidden; … }  
+- 原理: 右边元素overflow:hidden后，形成BFC渲染区域。左边的float元素就不能进入右边范围了。  
+
+![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/80f678c8a7904a65b8fc903d1c764b54~tplv-k3u1fbpfcp-watermark.image?)
+
+###### 总结: 解决垂直方向margin合并  
+
+- Step1: 添加父元素包裹下方元素  
+
+- Step2:  
+
+  - 父元素overflow:hidden  
+  - 父元素下第一个子元素前添加空<table>  
+
+  - 父元素padding代替子元素margin  
+  - 父元素+透明上边框  
+  - 父元素::before{ content:””; display:table }  
+
+###### 总结: 解决垂直方向margin溢出  
+
+- 父元素overflow:hidden  
+- 父元素下第一个子元素前添加空<table>  
+
+- 父元素padding代替子元素margin  
+- 父元素+透明上边框  
+- 父元素::before{ content:””; display:table }  
+
+#### Q2： 弹性布局回顾  
+
+看阮一峰大神写的flex布局，写的非常详细[flex布局](https://ruanyifeng.com/blog/2015/07/flex-grammar.html)
+
+#### Q3： 居中的方法总结  
+
+3. 1垂直和水平同时居中总结 
+
+- 利用绝对定位，设置 `left: 50%  和 top: 50% ` 现将子元素左上角移到父元素中心位置，然后再通过 `translate`  来调整子元素的中心点到父元素的中心。该方法可以不定宽高。
+
+```css
+<div class="wrap">
+	<div class="box">文字</div>
+</div>
+<style>
+.wrap {
+    width: 300px;
+    height: 300px;
+    border: 1px solid #ccc;
+    position: relative;
+}
+.box {
+    /* width: 100px;
+    height: 100px; */
+    background-color: aquamarine;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+</style>
+```
+
+- 利用绝对定位，子元素所有方向都为 0 ，将 margin  设置为 auto ，由于宽高固定，对应方向实现平分，该方法必须盒子有宽高。
+
+```css
+  <div class="wrap">
+    <div class="box">文字</div>
+  </div>
+  <style>
+    .wrap {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: aquamarine;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  </style>
+```
+
+- 利用绝对定位，设置 left: 50% 和 top: 50% 现将子元素左上角移到父元素中心位置，然后再通过 margin-left  和 margin-top  以子元素自己的一半宽高进行负值赋值。该方法必须定宽高。
+
+```css
+  <div class="wrap">
+    <div class="box">文字</div>
+  </div>
+  <style>
+    .wrap {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: aquamarine;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -50px;
+      margin-left: -50px;
+    }
+  </style>
+```
+
+- 利用 flex ，最经典最方便的一种了，不用解释，定不定宽高无所谓的。
+
+```css
+  <div class="wrap">
+    <div class="box">文字</div>
+  </div>
+  <style>
+    .wrap {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .box {
+      /* width: 100px;
+      height: 100px; */
+      background-color: aquamarine;
+    }
+  </style>
+```
+
+- 利用`display: table-cell`,可以不定宽高
+
+```css
+<div class="wrap">
+    <div class="box">文字</div>
+  </div>
+  <style>
+    .wrap {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #ccc;
+      display: table-cell;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .box {
+      /* width: 100px;
+      height: 100px; */
+      background-color: aquamarine;
+      display: inline-block;
+    }
+  </style>
+```
+
+- `grid`布局，目前是最新的技术点
+
+```css
+<div class="wrap">
+    <div class="box">文字</div>
+  </div>
+  <style>
+    .wrap {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #ccc;
+      display: grid;
+    }
+    .box {
+      /* width: 100px;
+      height: 100px; */
+      background-color: aquamarine;
+      margin: auto;
+    }
+  </style>
+```
+
+**[CSS Grid 网格布局教程](http://ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)**
+
