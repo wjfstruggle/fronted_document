@@ -559,3 +559,70 @@
 
 ##### 媒体查询
 
+#### Q5：利用css构建三角形（正三角，倒三角，左/右三角）
+
+```css
+// 正三角
+.triangle_up{
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid red;
+}
+// 右三角
+.triangle_right{
+    width: 0;
+    height: 0;
+    border-left: 100px solid red;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+}
+// 左三角
+.triangle_left{
+    width: 0;
+    height: 0;
+    border-right: 100px solid red;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+}
+// 倒三角
+.triangle_down{
+    width: 0;
+    height: 0;
+    border-right: 50px solid transparent;
+    border-left: 50px solid transparent;
+    border-top: 100px solid red;
+}
+// 右下三角
+.triangle_bottomright{
+    width: 0;
+    height: 0;
+    border-bottom: 100px solid red;
+    border-left: 100px solid transparent;
+}
+// 左下三角
+.triangle_bottomleft{
+    width: 0;
+    height: 0;
+    border-bottom: 100px solid red;
+    border-right: 100px solid transparent;
+}
+// 左上三角
+.triangle_topleft{
+    width: 0;
+    height: 0;
+    border-top: 100px solid red;
+    border-right: 100px solid transparent;
+    margin-top: 20px;
+}
+// 右上三角
+.triangle_topright{
+    width: 0;
+    height: 0;
+    border-top: 100px solid red;
+    border-left: 100px solid transparent;
+    margin-top: 20px;
+}
+```
+
