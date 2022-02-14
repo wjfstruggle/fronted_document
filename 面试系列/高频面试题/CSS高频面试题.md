@@ -626,3 +626,57 @@
 }
 ```
 
+#### Q6：缩放
+
+- 如何实现`<12px`的字(大部分浏览器最小字体默认是`12px`)
+
+```css
+display:inline-block; /*scale只能缩放行内块或块元素*/
+-webkit-transform: scale(0.5);  /*定义2D缩放*/
+-webkit-transform-origin:left top; /*定义缩放源点为左上角*/
+```
+
+- `0.5px`的线如何实现
+
+问题：
+
+```css
+.hr.half-px {
+    height: 0.5px;
+} 不同设备，不同浏览器差异较大
+```
+
+解决：
+
+```css
+.hr.scale-half {
+    height: 1px;
+    transform: scaleY(0.5);
+    transform-origin: 50% 100%; /*为了防止线模糊*/
+}
+```
+
+**更好的解决: `svg`** 
+
+- 其中: svg图片是 
+
+```svg
+<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='1px'>
+    <line x1='0' y1='0' x2='100%' y2='0' stroke='#000'></line>
+</svg>
+```
+
+- 使用`svg`的`line`元素画线，`stroke`表示描边颜色，默认描边宽度`stroke-width="1"`，由于`svg`的描边等属性的`1px`是物理像素的`1px`，相当于高清屏的`0.5px`，另外还可以使用`svg`的`rect`等元素进行绘制。
+
+~~但是在`firefox`挂了~~
+
+- 解决: 把svg转为base64
+
+```css
+.hr.svg {
+    background: url("data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='1px'><line x1='0' y1='0' x2='100%' y2='0' stroke='#000'></line></svg>");
+    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAlJyBoZWlnaHQ9JzFweCc+PGxpbmUgeDE9JzAnIHkxPScwJyB4Mj0nMTAwJScgeTI9JzAnIHN0cm9rZT0nIzAwMCc+PC9saW5lPjwvc3ZnPg==");
+}
+```
+
+- 优点，可以利用svg画出各种图形的0.5px线条
