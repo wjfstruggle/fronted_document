@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function mother() {
+      var i = 0;
+      return function() {
+        i++;
+        console.log(i);
+      }
+    }
+    var get1 = mother();
+    get1(); // 1
+    var get2 = mother();
+    get2(); // 1
+    get1(); // 2
+    get2(); // 2
+  </script>
+</body>
+</html>

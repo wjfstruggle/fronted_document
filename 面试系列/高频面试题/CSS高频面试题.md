@@ -4,7 +4,7 @@
 
 #### Q1、BFC专题  
 
-##### 1、防止高度坍塌==4==种方案  
+##### 1、防止高度坍塌4种方案  
 
 > 问题重现
 
@@ -460,3 +460,34 @@
 
 **[CSS Grid 网格布局教程](http://ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)**
 
+#### Q4：移动端响应式布局
+
+> 熟悉响应式布局的方式，几种，媒体查询原理等。
+
+```html
+<meta name="viewport"
+      content=""
+      width=device-width,user-scalable=no,
+      initial-scale=1.0,maximum-scale=1.0
+      ,minimum-scale=1.0">
+       中每个属性的含义
+```
+
+`viewport`视口：显示设备内部，真正实际可用于显示网页的区域大小
+
+`width`视口宽：`device-width`等于物理设备宽
+
+`user-scalable`：是否允许用户手工缩放网页
+
+`initial-scale`：加载页面时，页面的缩放比例是1，表示不缩放，原网页大小展示
+
+`maximum-scale=1.0`：允许用户缩放网页的最大缩放比例和最小缩放比例
+
+`minimum-scale=1.0`：都是1，表示不允许用户使用过程中，中途缩放网页
+
+##### 5种响应式布局方式
+
+###### 1、`flex`布局
+
+- 优点: 代码简单，布局方便
+- 缺点：如果中间有内容，缩到最小就不会在小了。且左右侧的宽度变小了
