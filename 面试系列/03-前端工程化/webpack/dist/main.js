@@ -1,0 +1,1 @@
+(()=>{const o=new Promise(((o,e)=>{console.log("start"),setTimeout((()=>{o("2333")}),1e3)}));console.log("end"),o.then((o=>{console.log("res",o)})),setTimeout((()=>{console.log("一直等")}),1e3)})();
