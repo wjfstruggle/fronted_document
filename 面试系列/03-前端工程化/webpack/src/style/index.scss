@@ -1,0 +1,11 @@
+.box{
+  background-color: bisque;
+  transform: translate(100px);
+  span{
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid red;
+  }
+}
