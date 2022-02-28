@@ -9,15 +9,15 @@
 <body>
   <script>
     // typeof：能判断所有值类型，函数。不可对 null、对象、数组进行精确判断，因为都返回 object 。
-    console.log(typeof null);
-    console.log(typeof []);
-    console.log(typeof {});
-    console.log(typeof function(){});
-    console.log(typeof "");
-    console.log(typeof 23);
-    console.log(typeof Symbol());
-    console.log(typeof true);
-    console.log(typeof 9n);
+    console.log(typeof null); // object
+    console.log(typeof []);// object
+    console.log(typeof {});// object
+    console.log(typeof function(){});// function
+    console.log(typeof "");// string
+    console.log(typeof 23);// number
+    console.log(typeof Symbol());// symbol
+    console.log(typeof true);// boolean
+    console.log(typeof 9n);// bigint
   </script>
 </body>
 </html>
