@@ -46,7 +46,7 @@ module.exports = {
     open: false,//配置自动启动浏览器
     proxy: {
       '/api': {
-        target: 'https://mall-staging.jzjiv.com',
+        target: 'http://localhost:8080',
         // 是否允许跨域
         changeOrigin: true,
         secure: false, // 如果是https接口，需要配置这个参数

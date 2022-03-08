@@ -4,6 +4,7 @@
     <search></search>
     <!-- <banner :bannerList="bannerList"></banner> -->
     <serve-list></serve-list>
+    <test></test>
     <div class="grap"></div>
     <!-- <nearby></nearby> -->
     <button @click="handelClick">{{name}}</button>
@@ -15,12 +16,13 @@
   </div>
 </template>
 <script>
-import { defineComponent, reactive, toRefs, ref, computed, watch,watchEffect } from 'vue'
+import { defineComponent, reactive, toRefs, ref, computed, watch,watchEffect ,provide} from 'vue'
 import Search from '@/components/search/search.vue'
 import Position from '@/components/position/position.vue'
 // import Banner from '@/components/banner/banner.vue'
 import ServeList from '@/components/serve-list/serve-list.vue'
 import Nearby from '@/components/nearby/nearby.vue'
+import test from './test.vue'
 import { Toast } from 'vant'
 import api from '@/api/api.js'
 export default defineComponent({
@@ -29,7 +31,8 @@ export default defineComponent({
     Position,
     // Banner,
     ServeList,
-    Nearby
+    Nearby,
+    test
   },
   data(){
     return {
@@ -55,6 +58,7 @@ export default defineComponent({
     }
   },
   setup() {
+    provide('user','兄弟')
     const state = reactive({
       bannerList: [], // 轮播图
       name:'点击2',
