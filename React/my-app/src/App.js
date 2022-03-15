@@ -3,6 +3,7 @@ import React, { memo,Suspense } from 'react';
 import { renderRoutes} from "react-router-config";
 import routes from './router'
 import AppHeader from '@/components/app-header';
+import AppFooter from '@/components/app-footer';
 import { HashRouter } from 'react-router-dom';
 export default memo(function App() {
   return (
@@ -12,6 +13,7 @@ export default memo(function App() {
         <Suspense fallback={<div>page loading</div>}>
           {renderRoutes(routes)}
         </Suspense>
+        <AppFooter />
       </HashRouter>
     // </Provider>
   )
