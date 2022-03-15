@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 8、event loop 求输出结果
+    console.log("script start");
+    async function fun1() {
+      await fun2()
+      console.log("async1 end");
+    }
+    function fun2() {
+      console.log("async2 end");
+    }
+    setTimeout(() => {
+      console.log("setTimeout end");
+    })
+    const promise = new Promise((reslove, reject) => {
+      console.log("promise start");
+      reslove();
+    })
+    promise.then(res => {
+      console.log("promise1 end");
+    }).then(res => {
+      console.log("promise2 end");
+    })
+    console.log("script end");
+    fun1();
+    // 9、闭包
+    // function fun(o,n) {
+    //   console.log(o);
+    //   return {
+    //     fun: function(m) {
+    //       return fun(n,m)
+    //     }
+    //   }
+    // }
+    // var a = fun(1)
+    // a;
+    // var b = fun(1).fun(2).fun(3)
+    // b
+  </script>
+</body>
+
+</html>

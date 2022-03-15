@@ -56,7 +56,7 @@
     function throttle(fn, delay) {
       let timer = null;
       let lastTime = null;
-      return function(args) {
+      return function() {
         let _args = arguments;
         let that = this;
         let newTime = + new Date();
