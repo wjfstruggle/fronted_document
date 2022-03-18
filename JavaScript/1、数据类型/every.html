@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+  //   var list = [
+  //     {
+  //       value:12
+  //     },
+  //     {
+  //       value:'12r'
+  //     }
+  //   ]
+  //   function clearNoNum(obj, index, array) {
+  //   obj.value = obj.value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
+  //   obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+  //   obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+  //   obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');//只能输入两个小数
+  //   if (obj.value.indexOf(".") < 0 && obj.value != "") {//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+  //     obj.value = parseFloat(obj.value);
+  //   }
+  //   if (!obj.value || obj.value == '0' || obj.value == '0.0' || obj.value == '0.00') {
+  //     return;
+  //   }
+  //   return obj.value
+  // }
+  // let flag = list.every(clearNoNum);
+  // let flag = /(^[0-9]{1,2}$)|(^[0-9]{1,2}[\.]{1}[0-9]{1,2}$)/.test(02)
+  // alert(flag)
+  var arr = [{name: 'a',id: 1}, {name: 'a',id: 6}, {name: 'b',id: 3}, {name: 'c',id: 4}, {name: 'c',id: 6}, {name: 'b',id: 6}, {name: 'd',id: 7}];
+  function uniqueObj(arr){
+    let map = new Map();
+    for (let item of arr) {
+      if (!map.has(item.name)) {
+        map.set(item.name, item);
+      }
+    }
+    return [...map.values()];
+  }
+  var l = uniqueObj(arr);
+  console.log(l);
+  let r = arr.sort((a,b) => {return a.id - b.id})
+  console.log(r);
+  </script>
+</body>
+</html>
