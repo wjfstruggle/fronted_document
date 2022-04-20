@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        <div class="block">
+            <el-timeline>
+              <el-timeline-item
+                v-for="(activity, index) in activities"
+                :key="index"
+                :icon="activity.icon"
+                :type="activity.type"
+                :color="activity.color"
+                :size="activity.size"
+                :timestamp="activity.timestamp">
+                {{activity.content}}
+                <div>
+                    <i class="el-icon-s-custom"></i>
+                    <span>{{activity.title}}</span>
+                    <div class="green">
+                        处理意见：拟稿
+                    </div>
+                </div>
+              </el-timeline-item>
+            </el-timeline>
+          </div>
+    </div>
+    <script>
+        new Vue({
+            el:"#root",
+            data(){
+                return {
+                    activities: [{
+                        content: '启动评估',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-12 20:46',
+                        size: 'large',
+                        color:"#409EFF",
+                        type: 'primary',
+                        icon: 'el-icon-success'
+                        }, {
+                        content: '评估内容拟稿',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-03 20:46',
+                        // color: '#0bbd87',
+                        }, {
+                        content: '评估团队评估',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-03 20:46',
+                        size: 'large'
+                        }, {
+                        content: '业务运营部门室经理审核',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-03 20:46'
+                        }, {
+                        content: '业务运营部门分管领导审核',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-03 20:46'
+                        }, {
+                        content: '评估管理部门经办人审核',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-03 20:46'
+                        }, {
+                        content: '评估管理部门室经理审核',
+                        title:"张三（业务运营部门接口人）",
+                        timestamp: '2018-04-03 20:46'
+                        }, {
+                        content: '评估管理部门分管领导审核',
+                        timestamp: '2018-04-03 20:46'
+                        }]
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
